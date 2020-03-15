@@ -9,7 +9,13 @@
 import UIKit
 
 class SearchViewController: UIViewController {
-
+    
+    struct TableView {
+        struct CellIdentifiers {
+            static let searchResultCell = "SearchResultCell"
+        }
+    }
+    
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
     
@@ -22,9 +28,9 @@ class SearchViewController: UIViewController {
         // 64ポイントのマージンを上部に取る設定。20:Status Bar, 44:SearchBar
         tableView.contentInset = UIEdgeInsets(top: 64, left: 0, bottom: 0, right: 0 )
         
-        // identifierを"SearchResultCell"で呼び出したときに、指定のxibから読み込む設定
-        let cellNib = UINib(nibName: "SearchResultCell", bundle: nil)
-        tableView.register(cellNib, forCellReuseIdentifier: "SearchResultCell")
+        // identifierを「TableView.CellIdentifiers.searchResultCell」で呼び出したときに、指定のxibから読み込む設定
+        let cellNib = UINib(nibName: TableView.CellIdentifiers.searchResultCell, bundle: nil)
+        tableView.register(cellNib, forCellReuseIdentifier: TableView.CellIdentifiers.searchResultCell)
     }
 }
 
@@ -63,7 +69,7 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "SearchResultCell", for: indexPath) as! SearchResultCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: TableView.CellIdentifiers.searchResultCell, for: indexPath) as! SearchResultCell
         if searchResults.count == 0 {  // 検索結果が0の場合
             cell.nameLabel.text = "(Nothing found)"
             cell.artistNameLabel.text = ""
