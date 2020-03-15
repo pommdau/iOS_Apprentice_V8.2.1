@@ -14,6 +14,7 @@ class SearchViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     var searchResults = [SearchResult]()
+    var hasSearched = false  // 検索を既に行った状態かどうか
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,11 +30,14 @@ extension SearchViewController: UISearchBarDelegate {
         
         searchResults = []
         for i in 0...2 {
-            let searchResult = SearchResult()
-            searchResult.name = String(format: "Fake Result %d for '%@'", i, searchBar.text!)
-            searchResult.artistName = searchBar.text!
-            searchResults.append(searchResult)
+            if searchBar.text! != "Hoge" {
+                let searchResult = SearchResult()
+                searchResult.name = String(format: "Fake Result %d for '%@'", i, searchBar.text!)
+                searchResult.artistName = searchBar.text!
+                searchResults.append(searchResult)
+            }
         }
+        hasSearched = true
         tableView.reloadData()
     }
     
@@ -44,21 +48,31 @@ extension SearchViewController: UISearchBarDelegate {
 
 extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return searchResults.count
+        if !hasSearched {
+            return 0
+        } else if searchResults.count == 0 {
+            return 1
+        } else {
+            return searchResults.count
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cellIdentifier = "SearchResultCell"
-        
         var cell:UITableViewCell! = tableView.dequeueReusableCell(withIdentifier: cellIdentifier)
         
         if cell == nil {
             cell = UITableViewCell(style: .subtitle, reuseIdentifier: cellIdentifier)
         }
-        
-        let searchResult = searchResults[indexPath.row]
-        cell.textLabel!.text = searchResult.name
-        cell.detailTextLabel!.text = searchResult.artistName
+        if searchResults.count == 0 {  // 検索結果が0の場合
+            cell.textLabel!.text = "(Nothing found)"
+            cell.detailTextLabel!.text = ""
+        } else {
+            let searchResult = searchResults[indexPath.row]
+            cell.textLabel!.text = searchResult.name
+            cell.detailTextLabel!.text = searchResult.artistName
+        }
         return cell
+            
     }
 }
