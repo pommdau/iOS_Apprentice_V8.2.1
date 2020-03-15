@@ -26,16 +26,20 @@
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="sqc-rx-JfL" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="Cz4-Yr-Ckf"/>
                             <constraint firstItem="EWE-bN-sJa" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="IWO-g1-T66"/>
-                            <constraint firstItem="sqc-rx-JfL" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" symbolic="YES" id="dNr-CW-UKa"/>
+                            <constraint firstItem="sqc-rx-JfL" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="SwE-Fz-Qg3"/>
+                            <constraint firstItem="sqc-rx-JfL" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="aPa-83-cAW"/>
                             <constraint firstItem="EWE-bN-sJa" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="eIo-1Q-47B"/>
-                            <constraint firstItem="sqc-rx-JfL" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="fBh-jN-M04"/>
                             <constraint firstItem="EWE-bN-sJa" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="kCF-2O-vYl"/>
+                            <constraint firstItem="sqc-rx-JfL" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="oVf-2Q-ZHQ"/>
                             <constraint firstItem="EWE-bN-sJa" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="yeh-p5-3EB"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
+                    <connections>
+                        <outlet property="searchBar" destination="sqc-rx-JfL" id="MdI-N7-uLs"/>
+                        <outlet property="tableView" destination="EWE-bN-sJa" id="xfx-1I-2Dz"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
