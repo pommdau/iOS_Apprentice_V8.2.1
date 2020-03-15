@@ -23,7 +23,7 @@
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="ntZ-gu-HCC"/>
                                 </connections>
                             </tableView>
-                            <searchBar contentMode="redraw" placeholder="App name, artist, song, album, e-book" translatesAutoresizingMaskIntoConstraints="NO" id="sqc-rx-JfL">
+                            <searchBar contentMode="redraw" text="" placeholder="App name, artist, song, album, e-book" translatesAutoresizingMaskIntoConstraints="NO" id="sqc-rx-JfL">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="56"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
