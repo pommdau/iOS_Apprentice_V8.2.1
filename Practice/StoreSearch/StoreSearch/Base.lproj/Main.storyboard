@@ -19,11 +19,18 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                             </tableView>
+                            <searchBar contentMode="redraw" placeholder="App name, artist, song, album, e-book" translatesAutoresizingMaskIntoConstraints="NO" id="sqc-rx-JfL">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="56"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </searchBar>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
+                            <constraint firstItem="sqc-rx-JfL" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="Cz4-Yr-Ckf"/>
                             <constraint firstItem="EWE-bN-sJa" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="IWO-g1-T66"/>
+                            <constraint firstItem="sqc-rx-JfL" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" symbolic="YES" id="dNr-CW-UKa"/>
                             <constraint firstItem="EWE-bN-sJa" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="eIo-1Q-47B"/>
+                            <constraint firstItem="sqc-rx-JfL" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="fBh-jN-M04"/>
                             <constraint firstItem="EWE-bN-sJa" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="kCF-2O-vYl"/>
                             <constraint firstItem="EWE-bN-sJa" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="yeh-p5-3EB"/>
                         </constraints>
