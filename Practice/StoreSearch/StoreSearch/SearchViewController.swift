@@ -13,6 +13,7 @@ class SearchViewController: UIViewController {
     struct TableView {
         struct CellIdentifiers {
             static let searchResultCell = "SearchResultCell"
+            static let nothingFoundCell = "NothingFoundCell"
         }
     }
     
@@ -29,8 +30,11 @@ class SearchViewController: UIViewController {
         tableView.contentInset = UIEdgeInsets(top: 64, left: 0, bottom: 0, right: 0 )
         
         // identifierを「TableView.CellIdentifiers.searchResultCell」で呼び出したときに、指定のxibから読み込む設定
-        let cellNib = UINib(nibName: TableView.CellIdentifiers.searchResultCell, bundle: nil)
+        var cellNib = UINib(nibName: TableView.CellIdentifiers.searchResultCell, bundle: nil)
         tableView.register(cellNib, forCellReuseIdentifier: TableView.CellIdentifiers.searchResultCell)
+        
+        cellNib = UINib(nibName: TableView.CellIdentifiers.nothingFoundCell, bundle: nil)
+        tableView.register(cellNib, forCellReuseIdentifier: TableView.CellIdentifiers.nothingFoundCell)
     }
 }
 
@@ -68,17 +72,15 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        let cell = tableView.dequeueReusableCell(withIdentifier: TableView.CellIdentifiers.searchResultCell, for: indexPath) as! SearchResultCell
         if searchResults.count == 0 {  // 検索結果が0の場合
-            cell.nameLabel.text = "(Nothing found)"
-            cell.artistNameLabel.text = ""
+            return tableView.dequeueReusableCell(withIdentifier: TableView.CellIdentifiers.nothingFoundCell, for: indexPath)
         } else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: TableView.CellIdentifiers.searchResultCell, for: indexPath) as! SearchResultCell
             let searchResult = searchResults[indexPath.row]
             cell.nameLabel.text = searchResult.name
             cell.artistNameLabel.text = searchResult.artistName
+            return cell
         }
-        return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
