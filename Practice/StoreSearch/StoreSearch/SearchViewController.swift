@@ -40,6 +40,15 @@ class SearchViewController: UIViewController {
         searchBar.becomeFirstResponder()
     }
     
+    func performStoreRequest(with url: URL) -> String? {
+        do {
+            return try String(contentsOf: url, encoding: .utf8)
+        } catch {
+            print("Download Error: \(error.localizedDescription)")
+            return nil
+        }
+    }
+    
     // MARK:- Heloper Methods
     func iTunesURL(searchText: String) -> URL {
         // スペースなどをパーセントエンコーディングする
@@ -68,6 +77,10 @@ extension SearchViewController: UISearchBarDelegate {
 //            }
             let url = iTunesURL(searchText: searchBar.text!)
             print("URL: '\(url)'")
+            
+            if let jsonString = performStoreRequest(with: url) {
+                print("Received JSON string '\(jsonString)'")
+            }
             
             tableView.reloadData()
         }
