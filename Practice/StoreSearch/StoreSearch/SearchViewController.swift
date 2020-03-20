@@ -39,23 +39,37 @@ class SearchViewController: UIViewController {
         // キーボードを表示する
         searchBar.becomeFirstResponder()
     }
+    
+    // MARK:- Heloper Methods
+    func iTunesURL(searchText: String) -> URL {
+        let urlString = String(format: "https://itunes.apple.com/search?term=%@", searchText)
+        let url = URL(string: urlString)
+        return url!
+    }
+    
 }
 
 extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        searchBar.resignFirstResponder()
-        
-        searchResults = []
-        for i in 0...2 {
-            if searchBar.text! != "Hoge" {
-                let searchResult = SearchResult()
-                searchResult.name = String(format: "Fake Result %d for '%@'", i, searchBar.text!)
-                searchResult.artistName = searchBar.text!
-                searchResults.append(searchResult)
-            }
+        if !searchBar.text!.isEmpty {
+            searchBar.resignFirstResponder()
+
+            hasSearched = true
+            searchResults = []
+            
+//            for i in 0...2 {
+//                if searchBar.text! != "Hoge" {
+//                    let searchResult = SearchResult()
+//                    searchResult.name = String(format: "Fake Result %d for '%@'", i, searchBar.text!)
+//                    searchResult.artistName = searchBar.text!
+//                    searchResults.append(searchResult)
+//                }
+//            }
+            let url = iTunesURL(searchText: searchBar.text!)
+            print("URL: '\(url)'")
+            
+            tableView.reloadData()
         }
-        hasSearched = true
-        tableView.reloadData()
     }
     
     func position(for bar: UIBarPositioning) -> UIBarPosition {
