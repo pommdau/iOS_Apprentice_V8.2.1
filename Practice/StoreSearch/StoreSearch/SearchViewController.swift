@@ -42,11 +42,12 @@ class SearchViewController: UIViewController {
     
     // MARK:- Heloper Methods
     func iTunesURL(searchText: String) -> URL {
-        let urlString = String(format: "https://itunes.apple.com/search?term=%@", searchText)
+        // スペースなどをパーセントエンコーディングする
+        let encodedText = searchText.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)!
+        let urlString = String(format: "https://itunes.apple.com/search?term=%@", encodedText)
         let url = URL(string: urlString)
         return url!
     }
-    
 }
 
 extension SearchViewController: UISearchBarDelegate {
