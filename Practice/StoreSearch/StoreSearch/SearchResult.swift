@@ -13,11 +13,16 @@ class ResultArray: Codable {
     var results = [SearchResult]()
 }
 
-class SearchResult: Codable {
+// CustomStringConvertible: the protocol allows objects to have a custom string describing the object, or its contents.
+class SearchResult: Codable, CustomStringConvertible {
     var artistName: String? = ""  // 返ってくるJSONデータは必ずしもデータを含まないのでオプショナル型にする
     var trackName: String? = ""
     
     var name: String {
         return trackName ?? ""
+    }
+    
+    var description: String {
+        return "Name: \(name), Artist Name: \(artistName ?? "None")"
     }
 }
