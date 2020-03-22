@@ -8,7 +8,16 @@
 
 import Foundation
 
-class SearchResult {
-    var name = ""
-    var artistName = ""
+class ResultArray: Codable {
+    var resultCount = 0
+    var results = [SearchResult]()
+}
+
+class SearchResult: Codable {
+    var artistName: String? = ""  // 返ってくるJSONデータは必ずしもデータを含まないのでオプショナル型にする
+    var trackName: String? = ""
+    
+    var name: String {
+        return trackName ?? ""
+    }
 }
