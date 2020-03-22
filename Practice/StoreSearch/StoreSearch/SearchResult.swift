@@ -17,7 +17,6 @@ class ResultArray: Codable {
 class SearchResult: Codable, CustomStringConvertible {
     var kind: String? = ""
     var artistName: String? = ""  // 返ってくるJSONデータは必ずしもデータを含まないのでオプショナル型にする
-    var trackName: String? = ""
     
     var name: String {
         return trackName ?? ""
@@ -26,10 +25,24 @@ class SearchResult: Codable, CustomStringConvertible {
     var description: String {
         return "Kind: \(kind ?? "None")  Name: \(name), Artist Name: \(artistName ?? "None")"
     }
+    
+    var trackName: String? = ""
+    
     var trackPrice: Double? = 0.0
     var currency = ""
-    var artworkUrl60 = ""
-    var artworkUrl100 = ""
-    var trackViewUrl: String? = ""
-    var primaryGenreName = ""
+    
+    var imageSmall = ""
+    var imageLarge = ""
+    var storeURL: String? = ""
+    var genre = ""
+    
+    // JSONのキー名とプロパティ名が異なるのでCodingKeysを使用する
+    enum CodingKeys: String, CodingKey {
+        case imageSmall = "artworkUrl60"
+        case imageLarge = "artworkUrl100"
+        case storeURL = "trackViewUrl"
+        case genre = "primaryGenreName"
+        case kind, artistName, trackName
+        case trackPrice, currency
+    }
 }
