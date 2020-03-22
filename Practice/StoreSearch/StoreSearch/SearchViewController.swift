@@ -95,7 +95,15 @@ extension SearchViewController: UISearchBarDelegate {
                     print("Failure! \(error.localizedDescription)")
                 } else if let httpResponse = response as? HTTPURLResponse,
                     httpResponse.statusCode == 200 {
-                    print("Success! \(data!)")
+                    if let data = data {
+                        self.searchResults = self.parse(data: data)
+                        self.searchResults.sort(by: <)
+                        DispatchQueue.main.async {
+                            self.isLoading = false
+                            self.tableView.reloadData()
+                        }
+                        return
+                    }
                 } else {
                     print("Failure! \(response!)")
                 }
