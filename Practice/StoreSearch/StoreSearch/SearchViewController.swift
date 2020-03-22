@@ -44,16 +44,6 @@ class SearchViewController: UIViewController {
         // キーボードを表示する
         searchBar.becomeFirstResponder()
     }
-
-    func performStoreRequest(with url: URL) -> Data? {
-        do {
-            return try Data(contentsOf: url)  // JSONをパースするためにData型とする
-        } catch {
-            print("Download Error: \(error.localizedDescription)")
-            showNetworkError()
-            return nil
-        }
-    }
     
     func parse(data: Data) -> [SearchResult] {
         do {
@@ -98,21 +88,16 @@ extension SearchViewController: UISearchBarDelegate {
             hasSearched = true
             searchResults = []
             
-            let queue = DispatchQueue.global()
-            let url = iTunesURL(searchText: searchBar.text!)
-            queue.async {
-                if let data = self.performStoreRequest(with: url) {
-                    self.searchResults = self.parse(data: data)
-                    // A~Zの順にソートする
-                    self.searchResults.sort(by: <)
-                    
-                    DispatchQueue.main.async {
-                        self.isLoading = false
-                        self.tableView.reloadData()
-                    }
-                    return
+            let url      = iTunesURL(searchText: searchBar.text!)
+            let session  = URLSession.shared
+            let dataTask = session.dataTask(with: url, completionHandler: { data, response, error in
+                if let error = error {
+                    print("Failure! \(error.localizedDescription)")
+                } else {
+                    print("Success! \(response!)")
                 }
-            }
+            })
+            dataTask.resume()  // 通信開始
         }
     }
     
