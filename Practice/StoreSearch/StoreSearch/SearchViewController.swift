@@ -24,6 +24,7 @@ class SearchViewController: UIViewController {
     var searchResults = [SearchResult]()
     var hasSearched   = false  // 検索を既に行った状態かどうか
     var isLoading     = false  // ネットワークと通信中かどうか
+    var dataTask: URLSessionDataTask?  // 通信用のオブジェクト
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -72,7 +73,7 @@ class SearchViewController: UIViewController {
     func iTunesURL(searchText: String) -> URL {
         // スペースなどをパーセントエンコーディングする
         let encodedText = searchText.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)!
-        let urlString = String(format: "https://itunes.apple.com/search?term=%@&limit=200", encodedText)
+        let urlString = String(format: "https://itunes.apple.com/search?term=%@&limit=100", encodedText)
         let url = URL(string: urlString)
         return url!
     }
@@ -82,6 +83,7 @@ extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         if !searchBar.text!.isEmpty {
             searchBar.resignFirstResponder()
+            dataTask?.cancel()  // 前の検索が残っている場合は中断する
             
             isLoading = true
             tableView.reloadData()
@@ -90,9 +92,9 @@ extension SearchViewController: UISearchBarDelegate {
             
             let url      = iTunesURL(searchText: searchBar.text!)
             let session  = URLSession.shared
-            let dataTask = session.dataTask(with: url, completionHandler: { data, response, error in
-                if let error = error {
-                    print("Failure! \(error.localizedDescription)")
+            dataTask = session.dataTask(with: url, completionHandler: { data, response, error in
+                if let error = error as NSError?, error.code == -999 {
+                    return  // Search was cancelled
                 } else if let httpResponse = response as? HTTPURLResponse,
                     httpResponse.statusCode == 200 {
                     if let data = data {
@@ -115,7 +117,7 @@ extension SearchViewController: UISearchBarDelegate {
                   self.showNetworkError()
                 }
             })
-            dataTask.resume()  // 通信開始
+            dataTask?.resume()  // 通信開始
         }
     }
     
