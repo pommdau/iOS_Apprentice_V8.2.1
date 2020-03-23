@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
-    <device id="retina4_7" orientation="portrait" appearance="light"/>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="rlF-R3-HXk">
+    <device id="retina4_0" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
@@ -8,49 +8,74 @@
     </dependencies>
     <scenes>
         <!--Search View Controller-->
-        <scene sceneID="tne-QT-ifu">
+        <scene sceneID="OFn-9V-Mb6">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="SearchViewController" customModule="StoreSearch" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                <viewController id="rlF-R3-HXk" customClass="SearchViewController" customModule="StoreSearch" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="S30-LD-3cc">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="EWE-bN-sJa">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="D5V-OU-RAH">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <connections>
-                                    <outlet property="dataSource" destination="BYZ-38-t0r" id="oYd-hA-YSq"/>
-                                    <outlet property="delegate" destination="BYZ-38-t0r" id="ntZ-gu-HCC"/>
+                                    <outlet property="dataSource" destination="rlF-R3-HXk" id="OIi-da-ex1"/>
+                                    <outlet property="delegate" destination="rlF-R3-HXk" id="43y-4a-yVF"/>
                                 </connections>
                             </tableView>
-                            <searchBar contentMode="redraw" text="" placeholder="App name, artist, song, album, e-book" translatesAutoresizingMaskIntoConstraints="NO" id="sqc-rx-JfL">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="56"/>
+                            <searchBar contentMode="redraw" placeholder="App name, artist, song, album, e-book" translatesAutoresizingMaskIntoConstraints="NO" id="KJ9-6G-4JW">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="56"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
-                                    <outlet property="delegate" destination="BYZ-38-t0r" id="Fb2-rH-8ek"/>
+                                    <outlet property="delegate" destination="rlF-R3-HXk" id="N6M-ys-WFl"/>
                                 </connections>
                             </searchBar>
+                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lQC-LE-97a">
+                                <rect key="frame" x="0.0" y="56" width="320" height="44"/>
+                                <items>
+                                    <navigationItem id="D8w-nj-CZM">
+                                        <nil key="title"/>
+                                        <segmentedControl key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="Ytq-1l-XxJ">
+                                            <rect key="frame" x="10" y="6" width="300" height="32"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <segments>
+                                                <segment title="All"/>
+                                                <segment title="Music"/>
+                                                <segment title="Software"/>
+                                                <segment title="E-books"/>
+                                            </segments>
+                                            <connections>
+                                                <action selector="segmentChanged:" destination="rlF-R3-HXk" eventType="valueChanged" id="N9F-v4-9aG"/>
+                                            </connections>
+                                        </segmentedControl>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
                         </subviews>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="EWE-bN-sJa" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="IWO-g1-T66"/>
-                            <constraint firstItem="sqc-rx-JfL" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="SwE-Fz-Qg3"/>
-                            <constraint firstItem="sqc-rx-JfL" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="aPa-83-cAW"/>
-                            <constraint firstItem="EWE-bN-sJa" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="eIo-1Q-47B"/>
-                            <constraint firstItem="EWE-bN-sJa" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="kCF-2O-vYl"/>
-                            <constraint firstItem="sqc-rx-JfL" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="oVf-2Q-ZHQ"/>
-                            <constraint firstItem="EWE-bN-sJa" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="yeh-p5-3EB"/>
+                            <constraint firstItem="KJ9-6G-4JW" firstAttribute="trailing" secondItem="aAP-5f-A5W" secondAttribute="trailing" id="5yG-Uu-xP9"/>
+                            <constraint firstItem="D5V-OU-RAH" firstAttribute="trailing" secondItem="aAP-5f-A5W" secondAttribute="trailing" id="6Qk-7K-yoy"/>
+                            <constraint firstItem="KJ9-6G-4JW" firstAttribute="top" secondItem="aAP-5f-A5W" secondAttribute="top" id="9cw-Xo-J3e"/>
+                            <constraint firstItem="lQC-LE-97a" firstAttribute="top" secondItem="KJ9-6G-4JW" secondAttribute="bottom" id="Cuj-No-Yd8"/>
+                            <constraint firstItem="D5V-OU-RAH" firstAttribute="top" secondItem="S30-LD-3cc" secondAttribute="top" id="aGb-YU-yff"/>
+                            <constraint firstItem="D5V-OU-RAH" firstAttribute="leading" secondItem="aAP-5f-A5W" secondAttribute="leading" id="bbs-bl-uGL"/>
+                            <constraint firstItem="lQC-LE-97a" firstAttribute="trailing" secondItem="aAP-5f-A5W" secondAttribute="trailing" id="dam-8e-f7h"/>
+                            <constraint firstItem="lQC-LE-97a" firstAttribute="leading" secondItem="aAP-5f-A5W" secondAttribute="leading" id="dtx-Rz-VeU"/>
+                            <constraint firstItem="KJ9-6G-4JW" firstAttribute="leading" secondItem="aAP-5f-A5W" secondAttribute="leading" id="gNS-oE-XJw"/>
+                            <constraint firstItem="D5V-OU-RAH" firstAttribute="bottom" secondItem="aAP-5f-A5W" secondAttribute="bottom" id="i3G-Sx-ZKt"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <viewLayoutGuide key="safeArea" id="aAP-5f-A5W"/>
                     </view>
                     <connections>
-                        <outlet property="searchBar" destination="sqc-rx-JfL" id="MdI-N7-uLs"/>
-                        <outlet property="tableView" destination="EWE-bN-sJa" id="xfx-1I-2Dz"/>
+                        <outlet property="searchBar" destination="KJ9-6G-4JW" id="7DU-44-aGR"/>
+                        <outlet property="segmentedControl" destination="Ytq-1l-XxJ" id="0fK-og-4HS"/>
+                        <outlet property="tableView" destination="D5V-OU-RAH" id="Ur6-ND-FY7"/>
                     </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Sf0-Dv-o0I" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="138.40000000000001" y="114.69265367316342"/>
+            <point key="canvasLocation" x="139" y="130"/>
         </scene>
     </scenes>
 </document>

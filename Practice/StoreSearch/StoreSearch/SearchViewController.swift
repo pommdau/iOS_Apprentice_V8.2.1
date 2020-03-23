@@ -20,6 +20,7 @@ class SearchViewController: UIViewController {
     
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var segmentedControl: UISegmentedControl!
     
     var searchResults = [SearchResult]()
     var hasSearched   = false  // 検索を既に行った状態かどうか
@@ -44,6 +45,10 @@ class SearchViewController: UIViewController {
         
         // キーボードを表示する
         searchBar.becomeFirstResponder()
+    }
+    
+    @IBAction func segmentChanged(_ sender: UISegmentedControl) {
+        print("Segment changed: \(sender.selectedSegmentIndex)")
     }
     
     func parse(data: Data) -> [SearchResult] {
