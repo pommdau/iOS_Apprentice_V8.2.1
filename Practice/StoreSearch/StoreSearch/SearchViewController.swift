@@ -107,6 +107,13 @@ extension SearchViewController: UISearchBarDelegate {
                 } else {
                     print("Failure! \(response!)")
                 }
+                // エラーが発生したときは下記を通る
+                DispatchQueue.main.async {
+                  self.hasSearched = false
+                  self.isLoading = false
+                  self.tableView.reloadData()
+                  self.showNetworkError()
+                }
             })
             dataTask.resume()  // 通信開始
         }
