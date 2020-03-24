@@ -30,8 +30,8 @@ class SearchViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // 64ポイントのマージンを上部に取る設定。20:Status Bar, 44:SearchBar
-        tableView.contentInset = UIEdgeInsets(top: 64, left: 0, bottom: 0, right: 0 )
+        // 64ポイントのマージンを上部に取る設定。20:Status Bar, 44:SearchBar, 44:Segmented Control
+        tableView.contentInset = UIEdgeInsets(top: 108, left: 0, bottom: 0, right: 0 )
         
         // identifierを「TableView.CellIdentifiers.searchResultCell」で呼び出したときに、指定のxibから読み込む設定
         var cellNib = UINib(nibName: TableView.CellIdentifiers.searchResultCell, bundle: nil)
@@ -45,10 +45,18 @@ class SearchViewController: UIViewController {
         
         // キーボードを表示する
         searchBar.becomeFirstResponder()
+        
+        let segmentColor = UIColor(red: 10/255, green: 80/255, blue: 80/255, alpha: 1)
+        let normalTextAttributes   = [NSAttributedString.Key.foregroundColor: segmentColor]
+        let selectedTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+        segmentedControl.selectedSegmentTintColor = segmentColor
+        segmentedControl.setTitleTextAttributes(normalTextAttributes,   for: .normal)
+        segmentedControl.setTitleTextAttributes(selectedTextAttributes, for: .selected)
+        segmentedControl.setTitleTextAttributes(selectedTextAttributes, for: .highlighted)
     }
     
     @IBAction func segmentChanged(_ sender: UISegmentedControl) {
-        print("Segment changed: \(sender.selectedSegmentIndex)")
+        performSearch()
     }
     
     func parse(data: Data) -> [SearchResult] {
@@ -75,10 +83,20 @@ class SearchViewController: UIViewController {
     }
     
     // MARK:- Heloper Methods
-    func iTunesURL(searchText: String) -> URL {
+    func iTunesURL(searchText: String, category: Int) -> URL {
+        let kind: String
+        switch category {
+        case 1: kind = "musicTrack"
+        case 2: kind = "software"
+        case 3: kind = "ebook"
+        default: kind = ""  // All:0
+        }
+        
         // スペースなどをパーセントエンコーディングする
         let encodedText = searchText.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)!
-        let urlString = String(format: "https://itunes.apple.com/search?term=%@&limit=100", encodedText)
+        let urlString = "https://itunes.apple.com/search?" +
+        "term=\(encodedText)&&limit=200&entity=\(kind)"
+        
         let url = URL(string: urlString)
         return url!
     }
@@ -86,6 +104,10 @@ class SearchViewController: UIViewController {
 
 extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        performSearch()
+    }
+    
+    func performSearch() {
         if !searchBar.text!.isEmpty {
             searchBar.resignFirstResponder()
             dataTask?.cancel()  // 前の検索が残っている場合は中断する
@@ -95,7 +117,7 @@ extension SearchViewController: UISearchBarDelegate {
             hasSearched = true
             searchResults = []
             
-            let url      = iTunesURL(searchText: searchBar.text!)
+            let url      = iTunesURL(searchText: searchBar.text!, category: segmentedControl.selectedSegmentIndex)
             let session  = URLSession.shared
             dataTask = session.dataTask(with: url, completionHandler: { data, response, error in
                 if let error = error as NSError?, error.code == -999 {
