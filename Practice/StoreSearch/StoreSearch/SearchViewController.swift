@@ -20,16 +20,18 @@ class SearchViewController: UIViewController {
     
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var segmentedControl: UISegmentedControl!
     
     var searchResults = [SearchResult]()
     var hasSearched   = false  // 検索を既に行った状態かどうか
     var isLoading     = false  // ネットワークと通信中かどうか
+    var dataTask: URLSessionDataTask?  // 通信用のオブジェクト
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // 64ポイントのマージンを上部に取る設定。20:Status Bar, 44:SearchBar
-        tableView.contentInset = UIEdgeInsets(top: 64, left: 0, bottom: 0, right: 0 )
+        // 64ポイントのマージンを上部に取る設定。20:Status Bar, 44:SearchBar, 44:Segmented Control
+        tableView.contentInset = UIEdgeInsets(top: 108, left: 0, bottom: 0, right: 0 )
         
         // identifierを「TableView.CellIdentifiers.searchResultCell」で呼び出したときに、指定のxibから読み込む設定
         var cellNib = UINib(nibName: TableView.CellIdentifiers.searchResultCell, bundle: nil)
@@ -43,16 +45,18 @@ class SearchViewController: UIViewController {
         
         // キーボードを表示する
         searchBar.becomeFirstResponder()
+        
+        let segmentColor = UIColor(red: 10/255, green: 80/255, blue: 80/255, alpha: 1)
+        let normalTextAttributes   = [NSAttributedString.Key.foregroundColor: segmentColor]
+        let selectedTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+        segmentedControl.selectedSegmentTintColor = segmentColor
+        segmentedControl.setTitleTextAttributes(normalTextAttributes,   for: .normal)
+        segmentedControl.setTitleTextAttributes(selectedTextAttributes, for: .selected)
+        segmentedControl.setTitleTextAttributes(selectedTextAttributes, for: .highlighted)
     }
-
-    func performStoreRequest(with url: URL) -> Data? {
-        do {
-            return try Data(contentsOf: url)  // JSONをパースするためにData型とする
-        } catch {
-            print("Download Error: \(error.localizedDescription)")
-            showNetworkError()
-            return nil
-        }
+    
+    @IBAction func segmentChanged(_ sender: UISegmentedControl) {
+        performSearch()
     }
     
     func parse(data: Data) -> [SearchResult] {
@@ -79,10 +83,20 @@ class SearchViewController: UIViewController {
     }
     
     // MARK:- Heloper Methods
-    func iTunesURL(searchText: String) -> URL {
+    func iTunesURL(searchText: String, category: Int) -> URL {
+        let kind: String
+        switch category {
+        case 1: kind = "musicTrack"
+        case 2: kind = "software"
+        case 3: kind = "ebook"
+        default: kind = ""  // All:0
+        }
+        
         // スペースなどをパーセントエンコーディングする
         let encodedText = searchText.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)!
-        let urlString = String(format: "https://itunes.apple.com/search?term=%@&limit=200", encodedText)
+        let urlString = "https://itunes.apple.com/search?" +
+        "term=\(encodedText)&&limit=200&entity=\(kind)"
+        
         let url = URL(string: urlString)
         return url!
     }
@@ -90,29 +104,47 @@ class SearchViewController: UIViewController {
 
 extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        performSearch()
+    }
+    
+    func performSearch() {
         if !searchBar.text!.isEmpty {
             searchBar.resignFirstResponder()
+            dataTask?.cancel()  // 前の検索が残っている場合は中断する
             
             isLoading = true
             tableView.reloadData()
             hasSearched = true
             searchResults = []
             
-            let queue = DispatchQueue.global()
-            let url = iTunesURL(searchText: searchBar.text!)
-            queue.async {
-                if let data = self.performStoreRequest(with: url) {
-                    self.searchResults = self.parse(data: data)
-                    // A~Zの順にソートする
-                    self.searchResults.sort(by: <)
-                    
-                    DispatchQueue.main.async {
-                        self.isLoading = false
-                        self.tableView.reloadData()
+            let url      = iTunesURL(searchText: searchBar.text!, category: segmentedControl.selectedSegmentIndex)
+            let session  = URLSession.shared
+            dataTask = session.dataTask(with: url, completionHandler: { data, response, error in
+                if let error = error as NSError?, error.code == -999 {
+                    return  // Search was cancelled
+                } else if let httpResponse = response as? HTTPURLResponse,
+                    httpResponse.statusCode == 200 {
+                    if let data = data {
+                        self.searchResults = self.parse(data: data)
+                        self.searchResults.sort(by: <)
+                        DispatchQueue.main.async {
+                            self.isLoading = false
+                            self.tableView.reloadData()
+                        }
+                        return
                     }
-                    return
+                } else {
+                    print("Failure! \(response!)")
                 }
-            }
+                // エラーが発生したときは下記を通る
+                DispatchQueue.main.async {
+                  self.hasSearched = false
+                  self.isLoading = false
+                  self.tableView.reloadData()
+                  self.showNetworkError()
+                }
+            })
+            dataTask?.resume()  // 通信開始
         }
     }
     
@@ -146,12 +178,7 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: TableView.CellIdentifiers.searchResultCell, for: indexPath) as! SearchResultCell
             let searchResult = searchResults[indexPath.row]
-            cell.nameLabel.text = searchResult.name
-            if searchResult.artist.isEmpty {
-                cell.artistNameLabel.text = "Unknown"
-            } else {
-                cell.artistNameLabel.text = String(format: "%@ (%@)", searchResult.artist, searchResult.type)
-            }
+            cell.configure(for: searchResult)
             
             return cell
         }

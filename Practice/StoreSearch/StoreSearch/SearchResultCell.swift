@@ -13,6 +13,7 @@ class SearchResultCell: UITableViewCell {
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var artistNameLabel: UILabel!
     @IBOutlet weak var artworkImageView: UIImageView!
+    var downloadTask: URLSessionDownloadTask?  // 1つのセルに必要なTaskは1つだけ
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -27,5 +28,27 @@ class SearchResultCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
-
+    
+    // 画像をダウンロードするまえにスクロールしまった場合に、ダウンロードを中断する
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        downloadTask?.cancel()
+        downloadTask = nil
+    }
+    
+    // MARK:- Public Methods
+    func configure(for result: SearchResult){
+        nameLabel.text = result.name
+        
+        if result.artist.isEmpty {
+            artistNameLabel.text = "Unknown"
+        } else {
+            artistNameLabel.text = String(format: "%@(%@)", result.artist, result.type)
+        }
+        
+        artworkImageView.image = UIImage(named: "Placeholder")
+        if let smallURL = URL(string: result.imageSmall) {
+            downloadTask = artworkImageView.loadImage(url: smallURL)
+        }
+    }
 }
