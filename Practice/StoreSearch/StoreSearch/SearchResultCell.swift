@@ -29,6 +29,13 @@ class SearchResultCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
+    // 画像をダウンロードするまえにスクロールしまった場合に、ダウンロードを中断する
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        downloadTask?.cancel()
+        downloadTask = nil
+    }
+    
     // MARK:- Public Methods
     func configure(for result: SearchResult){
         nameLabel.text = result.name
