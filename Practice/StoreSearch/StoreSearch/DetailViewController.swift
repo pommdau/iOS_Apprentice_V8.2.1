@@ -18,6 +18,8 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var genreLabel       : UILabel!
     @IBOutlet weak var priceButton      : UIButton!
     
+    var searchResult: SearchResult!
+    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
@@ -39,6 +41,10 @@ class DetailViewController: UIViewController {
         gestureRecognizer.cancelsTouchesInView = false
         gestureRecognizer.delegate = self
         view.addGestureRecognizer(gestureRecognizer)
+        
+        if searchResult != nil {
+            updateUI()  // just in case the developer forgets to fill in searchResult on the segue.
+        }
     }
     
 
@@ -52,9 +58,24 @@ class DetailViewController: UIViewController {
     }
     */
     
+    
     // MARK:- Actions
     @IBAction func close() {
         dismiss(animated: true, completion: nil)
+    }
+    
+    
+    // MARK:- Helper Methods
+    func updateUI() {
+        nameLabel.text = searchResult.name
+        
+        if searchResult.artist.isEmpty {
+            artistNameLabel.text = "Unknown"
+        } else {
+            artistNameLabel.text = searchResult.artist
+        }
+        kindLabel.text  = searchResult.type
+        genreLabel.text = searchResult.genre
     }
 }
 
