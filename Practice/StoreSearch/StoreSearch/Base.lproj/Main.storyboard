@@ -166,10 +166,12 @@
                     </view>
                     <connections>
                         <outlet property="artistNameLabel" destination="G7Q-3A-6YY" id="b0O-RR-37d"/>
+                        <outlet property="artworkImageView" destination="uCx-Hh-3xk" id="rer-Lj-CRp"/>
                         <outlet property="genreLabel" destination="VUH-tH-8Zj" id="Ogc-su-FTJ"/>
                         <outlet property="kindLabel" destination="k2Y-U7-pQp" id="fRf-bT-yYm"/>
                         <outlet property="nameLabel" destination="7kX-h9-Xnd" id="czs-3V-ssG"/>
-                        <outlet property="popupView" destination="uCx-Hh-3xk" id="TMU-LE-tUy"/>
+                        <outlet property="popupView" destination="61R-rg-Id0" id="85V-ov-ufM"/>
+                        <outlet property="priceButton" destination="tRO-1j-GXE" id="IBl-hr-ktA"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="c2x-By-Kha" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
