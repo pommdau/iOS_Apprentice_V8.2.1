@@ -30,6 +30,15 @@ class DetailViewController: UIViewController {
         super.viewDidLoad()
         view.tintColor = UIColor(red: 20/255, green: 160/255, blue: 160/255, alpha: 1)
         popupView.layer.cornerRadius = 10
+        
+        // このViewController内でGestureRecognizerが機能させる設定
+        //
+        // popupView内は以下のメソッドで無効になっている。
+        // gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool
+        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(close))
+        gestureRecognizer.cancelsTouchesInView = false
+        gestureRecognizer.delegate = self
+        view.addGestureRecognizer(gestureRecognizer)
     }
     
 
@@ -57,5 +66,14 @@ extension DetailViewController: UIViewControllerTransitioningDelegate {
                                 source: UIViewController) -> UIPresentationController? {
         return DimmingPresentationController(presentedViewController: presented,
                                              presenting: presenting)
+    }
+}
+
+extension DetailViewController: UIGestureRecognizerDelegate {
+
+    // 自分のビュー以外、つまりpopupViewの外側を選択したときにtouchを受け取る設定
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer,
+                           shouldReceive touch: UITouch) -> Bool {
+        return (touch.view === self.view)
     }
 }
