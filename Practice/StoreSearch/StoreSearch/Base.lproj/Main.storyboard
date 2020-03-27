@@ -71,6 +71,7 @@
                         <outlet property="searchBar" destination="KJ9-6G-4JW" id="7DU-44-aGR"/>
                         <outlet property="segmentedControl" destination="Ytq-1l-XxJ" id="0fK-og-4HS"/>
                         <outlet property="tableView" destination="D5V-OU-RAH" id="Ur6-ND-FY7"/>
+                        <segue destination="Wu3-ct-xTZ" kind="presentation" identifier="ShowDetail" id="Crv-RG-KZN"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Sf0-Dv-o0I" sceneMemberID="firstResponder"/>
@@ -82,16 +83,19 @@
             <objects>
                 <viewController id="Wu3-ct-xTZ" userLabel="Detail" customClass="DetailViewController" customModule="StoreSearch" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="FQ9-Jm-KNQ">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="548"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="61R-rg-Id0" userLabel="Pop-up View">
-                                <rect key="frame" x="40" y="164" width="240" height="240"/>
+                                <rect key="frame" x="40" y="154" width="240" height="240"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="45s-Ic-KL8" userLabel="Close Button">
                                         <rect key="frame" x="4" y="4" width="15" height="18"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <state key="normal" image="CloseButton"/>
+                                        <connections>
+                                            <action selector="close" destination="Wu3-ct-xTZ" eventType="touchUpInside" id="dNv-0t-iry"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                                 <color key="backgroundColor" red="0.94901960780000005" green="0.94901960780000005" blue="0.96862745100000003" alpha="0.94999999999999996" colorSpace="custom" customColorSpace="sRGB"/>
@@ -111,7 +115,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="c2x-By-Kha" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="836" y="130"/>
+            <point key="canvasLocation" x="891" y="130"/>
         </scene>
     </scenes>
     <resources>

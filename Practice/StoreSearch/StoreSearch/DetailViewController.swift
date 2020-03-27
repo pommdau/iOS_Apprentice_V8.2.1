@@ -9,7 +9,15 @@
 import UIKit
 
 class DetailViewController: UIViewController {
-
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        
+        // 画面遷移をカスタムにする設定
+        modalPresentationStyle = .custom
+        transitioningDelegate  = self
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -26,5 +34,20 @@ class DetailViewController: UIViewController {
         // Pass the selected object to the new view controller.
     }
     */
+    
+    // MARK:- Actions
+    @IBAction func close() {
+        dismiss(animated: true, completion: nil)
+    }
+}
 
+extension DetailViewController: UIViewControllerTransitioningDelegate {
+    
+    // このViewへの遷移に関して、DimmingPresentationControllerを通常のPresentationControllerの代わりに使う設定
+    func presentationController(forPresented presented: UIViewController,
+                                presenting: UIViewController?,
+                                source: UIViewController) -> UIPresentationController? {
+        return DimmingPresentationController(presentedViewController: presented,
+                                             presenting: presenting)
+    }
 }

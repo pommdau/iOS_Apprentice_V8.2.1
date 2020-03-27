@@ -19,6 +19,7 @@
 		2AF54309241E543400ED662F /* NothingFoundCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2AF54308241E543300ED662F /* NothingFoundCell.xib */; };
 		D00854EC242C729A004FF26F /* UIImageView+DownloadImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00854EB242C729A004FF26F /* UIImageView+DownloadImage.swift */; };
 		D0A5D729242D6CDD00C076BC /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A5D728242D6CDD00C076BC /* DetailViewController.swift */; };
+		D0A5D72B242D745700C076BC /* DimmingPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A5D72A242D745700C076BC /* DimmingPresentationController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,7 @@
 		2AF54308241E543300ED662F /* NothingFoundCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NothingFoundCell.xib; sourceTree = "<group>"; };
 		D00854EB242C729A004FF26F /* UIImageView+DownloadImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+DownloadImage.swift"; sourceTree = "<group>"; };
 		D0A5D728242D6CDD00C076BC /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
+		D0A5D72A242D745700C076BC /* DimmingPresentationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DimmingPresentationController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +81,7 @@
 				2A51382F2427810000F8FE45 /* LoadingCell.xib */,
 				D0A5D728242D6CDD00C076BC /* DetailViewController.swift */,
 				D00854EB242C729A004FF26F /* UIImageView+DownloadImage.swift */,
+				D0A5D72A242D745700C076BC /* DimmingPresentationController.swift */,
 				2AB5E337241DE91900844A3E /* Assets.xcassets */,
 				2AB5E33C241DE91900844A3E /* Info.plist */,
 			);
@@ -161,6 +164,7 @@
 				2AB5E333241DE91500844A3E /* SearchViewController.swift in Sources */,
 				2AB5E32F241DE91500844A3E /* AppDelegate.swift in Sources */,
 				D00854EC242C729A004FF26F /* UIImageView+DownloadImage.swift in Sources */,
+				D0A5D72B242D745700C076BC /* DimmingPresentationController.swift in Sources */,
 				2AB5E343241E336000844A3E /* SearchResult.swift in Sources */,
 				2AB5E331241DE91500844A3E /* SceneDelegate.swift in Sources */,
 				2AF54307241E4D5E00ED662F /* SearchResultCell.swift in Sources */,
