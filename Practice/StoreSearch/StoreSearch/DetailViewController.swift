@@ -19,6 +19,7 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var priceButton      : UIButton!
     
     var searchResult: SearchResult!
+    var downloadTask: URLSessionDownloadTask?  // 詳細画像をダウンロードするためのもの
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -26,6 +27,12 @@ class DetailViewController: UIViewController {
         // 画面遷移をカスタムにする設定
         modalPresentationStyle = .custom
         transitioningDelegate  = self
+    }
+    
+    deinit {
+        // 詳細画像のダウンロードをキャンセルする
+        print("deinit \(self)")
+        downloadTask?.cancel()
     }
     
     override func viewDidLoad() {
@@ -98,8 +105,12 @@ class DetailViewController: UIViewController {
         } else {
             priceText = ""
         }
-        
         priceButton.setTitle(priceText, for: .normal)
+        
+        // Get image
+        if let largeURL = URL(string: searchResult.imageLarge) {
+            downloadTask = artworkImageView.loadImage(url: largeURL)
+        }
     }
 }
 
