@@ -89,17 +89,19 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="61R-rg-Id0" userLabel="Pop-up View">
                                 <rect key="frame" x="40" y="154" width="240" height="240"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="45s-Ic-KL8" userLabel="Close Button">
+                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="45s-Ic-KL8" userLabel="Close Button">
                                         <rect key="frame" x="4" y="4" width="15" height="18"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <state key="normal" image="CloseButton"/>
                                         <connections>
                                             <action selector="close" destination="Wu3-ct-xTZ" eventType="touchUpInside" id="dNv-0t-iry"/>
                                         </connections>
                                     </button>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uCx-Hh-3xk">
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="uCx-Hh-3xk">
                                         <rect key="frame" x="70" y="8" width="100" height="100"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="100" id="al8-kh-bxZ"/>
+                                            <constraint firstAttribute="width" constant="100" id="m4V-8P-Cei"/>
+                                        </constraints>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Kind Value" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="k2Y-U7-pQp">
                                         <rect key="frame" x="67" y="165" width="160" height="21"/>
@@ -115,17 +117,15 @@
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="0.49678938356164382" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Artist Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="G7Q-3A-6YY">
-                                        <rect key="frame" x="8" y="142" width="220" height="21"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Artist Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="G7Q-3A-6YY">
+                                        <rect key="frame" x="8" y="140.5" width="81.5" height="18"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="7kX-h9-Xnd">
-                                        <rect key="frame" x="8" y="116" width="220" height="24"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="21"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="7kX-h9-Xnd">
+                                        <rect key="frame" x="8" y="116" width="47" height="20.5"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
@@ -158,9 +158,18 @@
                                 </subviews>
                                 <color key="backgroundColor" red="0.94901960780000005" green="0.94901960780000005" blue="0.96862745100000003" alpha="0.94999999999999996" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
+                                    <constraint firstItem="uCx-Hh-3xk" firstAttribute="top" secondItem="61R-rg-Id0" secondAttribute="top" constant="8" id="1kY-nP-AFY"/>
+                                    <constraint firstItem="7kX-h9-Xnd" firstAttribute="top" secondItem="uCx-Hh-3xk" secondAttribute="bottom" constant="8" id="FWS-bg-ACX"/>
                                     <constraint firstAttribute="width" constant="240" id="JcG-tY-h0m"/>
+                                    <constraint firstItem="7kX-h9-Xnd" firstAttribute="leading" secondItem="61R-rg-Id0" secondAttribute="leading" constant="8" id="Kkl-QU-dVO"/>
+                                    <constraint firstItem="G7Q-3A-6YY" firstAttribute="leading" secondItem="61R-rg-Id0" secondAttribute="leading" constant="8" id="Lj7-L7-33b"/>
                                     <constraint firstAttribute="trailing" secondItem="tRO-1j-GXE" secondAttribute="trailing" constant="8" id="PMs-F2-yAl"/>
+                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="7kX-h9-Xnd" secondAttribute="trailing" constant="8" id="UqU-C1-mQS"/>
                                     <constraint firstAttribute="height" constant="240" id="YYJ-28-NKc"/>
+                                    <constraint firstItem="G7Q-3A-6YY" firstAttribute="top" secondItem="7kX-h9-Xnd" secondAttribute="bottom" constant="4" id="azf-JA-rhB"/>
+                                    <constraint firstItem="uCx-Hh-3xk" firstAttribute="centerX" secondItem="61R-rg-Id0" secondAttribute="centerX" id="b1I-nH-KfL"/>
+                                    <constraint firstItem="45s-Ic-KL8" firstAttribute="top" secondItem="61R-rg-Id0" secondAttribute="top" constant="4" id="jMD-Gr-UAA"/>
+                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="G7Q-3A-6YY" secondAttribute="trailing" constant="8" id="kZh-IZ-Nug"/>
                                     <constraint firstAttribute="bottom" secondItem="tRO-1j-GXE" secondAttribute="bottom" constant="8" id="y0f-uO-6se"/>
                                 </constraints>
                             </view>
