@@ -124,6 +124,13 @@ extension DetailViewController: UIViewControllerTransitioningDelegate {
         return DimmingPresentationController(presentedViewController: presented,
                                              presenting: presenting)
     }
+    
+    // 遷移時にアニメーションを使用する設定
+    func animationController(forPresented presented: UIViewController,
+                             presenting: UIViewController,
+                             source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return BounceAnimationController()
+    }
 }
 
 extension DetailViewController: UIGestureRecognizerDelegate {
