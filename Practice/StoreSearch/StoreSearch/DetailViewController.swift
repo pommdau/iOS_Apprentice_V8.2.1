@@ -38,6 +38,7 @@ class DetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.tintColor = UIColor(red: 20/255, green: 160/255, blue: 160/255, alpha: 1)
+        view.backgroundColor = UIColor.clear
         popupView.layer.cornerRadius = 10
         
         // このViewController内でGestureRecognizerが機能させる設定
@@ -122,6 +123,17 @@ extension DetailViewController: UIViewControllerTransitioningDelegate {
                                 source: UIViewController) -> UIPresentationController? {
         return DimmingPresentationController(presentedViewController: presented,
                                              presenting: presenting)
+    }
+    
+    // 遷移時にアニメーションを使用する設定
+    func animationController(forPresented presented: UIViewController,
+                             presenting: UIViewController,
+                             source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return BounceAnimationController()
+    }
+    
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return SlideOutAnimationController()
     }
 }
 
