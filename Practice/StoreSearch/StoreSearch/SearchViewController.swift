@@ -126,6 +126,11 @@ class SearchViewController: UIViewController {
             addChild(controller)                 // SearchViewControllerにLandscapeVIewControllerが画面の一部であることを伝える
             coordinator.animate(alongsideTransition: { _ in
                 controller.view.alpha = 1
+                self.searchBar.resignFirstResponder()
+                
+                if self.presentedViewController != nil {  // DetailViewControllerが表示されているならばcloseする
+                    self.dismiss(animated: true, completion: nil)
+                }
             }, completion: { _ in
                 controller.didMove(toParent: self)  // 新しいViewに親のViewを持つことを伝える
             })
