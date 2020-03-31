@@ -25,7 +25,8 @@ class SearchViewController: UIViewController {
     var searchResults = [SearchResult]()
     var hasSearched   = false  // 検索を既に行った状態かどうか
     var isLoading     = false  // ネットワークと通信中かどうか
-    var dataTask: URLSessionDataTask?  // 通信用のオブジェクト
+    var dataTask    : URLSessionDataTask?  // 通信用のオブジェクト
+    var landscapeVC : LandscapeViewController?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,6 +54,19 @@ class SearchViewController: UIViewController {
         segmentedControl.setTitleTextAttributes(normalTextAttributes,   for: .normal)
         segmentedControl.setTitleTextAttributes(selectedTextAttributes, for: .selected)
         segmentedControl.setTitleTextAttributes(selectedTextAttributes, for: .highlighted)
+    }
+    
+    override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.willTransition(to: newCollection, with: coordinator)
+        
+        switch newCollection.verticalSizeClass {
+        case .compact:  // iPhone Landscape, iPhone 6 plus Landscape
+            showLandscape(with: coordinator)
+        case .regular, .unspecified:  // iPhone Portrait, iPad Portrait/Landscape
+            hideLandscape(with: coordinator)
+        @unknown default:
+            fatalError()
+        }
     }
     
     @IBAction func segmentChanged(_ sender: UISegmentedControl) {
@@ -101,6 +115,20 @@ class SearchViewController: UIViewController {
         return url!
     }
     
+    func showLandscape(with coordinator: UIViewControllerTransitionCoordinator) {
+        guard landscapeVC == nil else { return }  // すでに表示されているならば何もしない
+        landscapeVC = storyboard!.instantiateViewController(withIdentifier: "LandscapeViewController") as? LandscapeViewController
+        if let controller = landscapeVC {  // SearchViewControllerにLandscapeVIewControllerをChildとして埋め込む
+            controller.view.frame = view.bounds  // SearchViewControllerの大きさにする
+            view.addSubview(controller.view)     // subViewに追加
+            addChild(controller)                 // SearchViewControllerにLandscapeVIewControllerが画面の一部であることを伝える
+            controller.didMove(toParent: self)   // 新しいViewに親のViewを持つことを伝える
+        }
+    }
+    
+    func hideLandscape(with coordinator: UIViewControllerTransitionCoordinator) {
+        
+    }
     
     // MARK:- Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
