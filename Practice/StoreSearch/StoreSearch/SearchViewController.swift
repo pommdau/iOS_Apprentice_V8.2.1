@@ -120,14 +120,30 @@ class SearchViewController: UIViewController {
         landscapeVC = storyboard!.instantiateViewController(withIdentifier: "LandscapeViewController") as? LandscapeViewController
         if let controller = landscapeVC {  // SearchViewControllerにLandscapeVIewControllerをChildとして埋め込む
             controller.view.frame = view.bounds  // SearchViewControllerの大きさにする
+            controller.view.alpha = 0  // for crossfade
+            
             view.addSubview(controller.view)     // subViewに追加
             addChild(controller)                 // SearchViewControllerにLandscapeVIewControllerが画面の一部であることを伝える
-            controller.didMove(toParent: self)   // 新しいViewに親のViewを持つことを伝える
+            coordinator.animate(alongsideTransition: { _ in
+                controller.view.alpha = 1
+            }, completion: { _ in
+                controller.didMove(toParent: self)  // 新しいViewに親のViewを持つことを伝える
+            })
         }
     }
     
     func hideLandscape(with coordinator: UIViewControllerTransitionCoordinator) {
-        
+        if let controller = landscapeVC {
+            controller.willMove(toParent: nil)
+            coordinator.animate(alongsideTransition: { _ in
+                controller.view.alpha = 0
+            }, completion: { _ in
+                controller.view.removeFromSuperview()
+                controller.removeFromParent()
+                self.landscapeVC = nil
+            })
+            
+        }
     }
     
     // MARK:- Navigation
