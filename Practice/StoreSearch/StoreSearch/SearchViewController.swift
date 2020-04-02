@@ -119,6 +119,8 @@ class SearchViewController: UIViewController {
         guard landscapeVC == nil else { return }  // すでに表示されているならば何もしない
         landscapeVC = storyboard!.instantiateViewController(withIdentifier: "LandscapeViewController") as? LandscapeViewController
         if let controller = landscapeVC {  // SearchViewControllerにLandscapeVIewControllerをChildとして埋め込む
+            controller.searchResults = searchResults  // viewDidLoad()を呼ぶためのトリガとなるので、controller.viewにアクセスする前に呼ぶ必要がある
+            
             controller.view.frame = view.bounds  // SearchViewControllerの大きさにする
             controller.view.alpha = 0  // for crossfade
             
