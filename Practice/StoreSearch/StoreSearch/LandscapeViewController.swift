@@ -66,11 +66,12 @@ class LandscapeViewController: UIViewController {
 
     // MARK:- Private Methods
     private func tileButtons(_ searchResults: [SearchResult]) {
+        // デフォルトは4-inch deviceとする
         var columnsPerPage      = 6
         var rowsPerPage         = 3
-        var itemWidth: CGFloat  = 94
+        var itemWidth : CGFloat = 94
         var itemHeight: CGFloat = 88
-        var marginX: CGFloat    = 2  // 568 % 6columns = 4が余るのでマージンは両端で2
+        var marginX: CGFloat    = 2  // 568 % 6columns = 4が余るのでマージンはページの両端で2
         var marginY: CGFloat    = 20
         
         let viewWidth = scrollView.bounds.size.width
@@ -82,9 +83,9 @@ class LandscapeViewController: UIViewController {
             
         case 667:
         // 4.7-inch device
-            columnsPerPage  = 7
+            columnsPerPage  = 7   //4-inchに比べて横に広いので、columnを1つ増やす
             itemWidth       = 95
-            itemHeight      = 98
+            itemHeight      = 98  // 少し大きい98point
             marginX         = 1   // 667 % 3 = 1
             marginY         = 29
             
@@ -118,6 +119,7 @@ class LandscapeViewController: UIViewController {
         var row    = 0
         var column = 0
         var x      = marginX
+        
         for (index, result) in searchResults.enumerated() {
             let button = UIButton(type: .system)
             button.backgroundColor = UIColor.white
@@ -129,7 +131,7 @@ class LandscapeViewController: UIViewController {
             scrollView.addSubview(button)
 
             row += 1
-            if row == rowsPerPage {  // row1列の配置が終わったら次のcolumnへ移る
+            if row == rowsPerPage {  // column1列の配置が終わったら次のcolumnへ移る
                 row = 0
                 x += itemWidth
                 column += 1
@@ -143,8 +145,8 @@ class LandscapeViewController: UIViewController {
         
         // Set scroll view content size
         let buttonsPerPage = columnsPerPage * rowsPerPage
-        let numPages = 1 + (searchResults.count - 1) / buttonsPerPage
-        scrollView.contentSize = CGSize(width: CGFloat(numPages) * viewWidth,
+        let numPages = (searchResults.count - 1) / buttonsPerPage + 1  // 結果が切り捨てのIntなので+1をする
+        scrollView.contentSize = CGSize(width: viewWidth * CGFloat(numPages),
                                         height: scrollView.bounds.size.height)
         
         print("Number of pages: \(numPages)")

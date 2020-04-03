@@ -9,3 +9,11 @@ print("On main thread? " + (Thread.current.isMainThread ? "Yes" : "No"))
 # Chapter44
 
 ![](https://i.imgur.com/1a0yopF.jpg)
+
+![](https://i.imgur.com/U8blMqt.jpg)
+
+
+
+
+
+
