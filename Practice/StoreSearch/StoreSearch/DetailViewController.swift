@@ -21,6 +21,12 @@ class DetailViewController: UIViewController {
     var searchResult: SearchResult!
     var downloadTask: URLSessionDownloadTask?  // 詳細画像をダウンロードするためのもの
     
+    enum AnimationStyle {
+        case slide
+        case fade
+    }
+    var dismissStyle = AnimationStyle.fade
+    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
@@ -69,6 +75,7 @@ class DetailViewController: UIViewController {
     
     // MARK:- Actions
     @IBAction func close() {
+        dismissStyle = .slide
         dismiss(animated: true, completion: nil)
     }
     
@@ -133,7 +140,13 @@ extension DetailViewController: UIViewControllerTransitioningDelegate {
     }
     
     func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return SlideOutAnimationController()
+        switch dismissStyle {
+        case .slide:
+            return SlideOutAnimationController()
+        case .fade:
+            return FadeOutAnimationController()
+        }
+        
     }
 }
 
