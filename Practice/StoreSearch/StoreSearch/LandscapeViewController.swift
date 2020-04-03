@@ -15,11 +15,15 @@ class LandscapeViewController: UIViewController {
     
     var searchResults = [SearchResult]()
     private var firstTime = true
+    private var downloads = [URLSessionDownloadTask]()  // ダウンロードを途中でキャンセルするためのプロパティ
     
     private func downloadImage(for searchResult: SearchResult, andPlaceOn button: UIButton) {
         if let url = URL(string: searchResult.imageSmall) {
             let task = URLSession.shared.downloadTask(with: url) {
                 // 以下はサブスレッドで呼ばれる
+                // [weak button]: 途中でキャンセルすることがあるのでweakでキャプチャーしている
+                // よって開放されnilになることがあるので、if letでreturnして安全に処理している
+                // またdeinitでもダウンロードがあればキャンセルしている。これは無駄な処理をしないため。
                 [weak button] url, response, error in
                 
                 if error == nil,
@@ -34,6 +38,7 @@ class LandscapeViewController: UIViewController {
                 }
             }
             task.resume()  // 通信開始
+            downloads.append(task)
         }
     }
     
@@ -73,6 +78,14 @@ class LandscapeViewController: UIViewController {
         if firstTime {
             firstTime = false
             tileButtons(searchResults)
+        }
+    }
+    
+    deinit {
+        print("deinit \(self)")
+        // 画像をダウンロードしているならばキャンセルする
+        for task in downloads {
+            task.cancel()
         }
     }
     
