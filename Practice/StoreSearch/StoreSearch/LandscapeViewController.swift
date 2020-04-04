@@ -77,7 +77,17 @@ class LandscapeViewController: UIViewController {
         // 一回だけ呼ばれるようにfirstTime変数を使う
         if firstTime {
             firstTime = false
-            tileButtons(search.searchResults)
+            
+            switch search.state {
+            case .notSearchedYet:
+                break
+            case .loading:
+                break
+            case .noResults:
+                break
+            case .results(let list):
+                tileButtons(list)
+            }
         }
     }
     
