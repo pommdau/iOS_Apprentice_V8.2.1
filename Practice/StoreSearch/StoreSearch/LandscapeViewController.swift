@@ -13,7 +13,7 @@ class LandscapeViewController: UIViewController {
     @IBOutlet weak var scrollView : UIScrollView!
     @IBOutlet weak var pageControl: UIPageControl!
     
-    var searchResults = [SearchResult]()
+    var search: Search!
     private var firstTime = true
     private var downloads = [URLSessionDownloadTask]()  // ダウンロードを途中でキャンセルするためのプロパティ
     
@@ -77,7 +77,7 @@ class LandscapeViewController: UIViewController {
         // 一回だけ呼ばれるようにfirstTime変数を使う
         if firstTime {
             firstTime = false
-            tileButtons(searchResults)
+            tileButtons(search.searchResults)
         }
     }
     
