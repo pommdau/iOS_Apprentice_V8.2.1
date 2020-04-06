@@ -85,6 +85,7 @@ class LandscapeViewController: UIViewController {
                 showSpinner()
                 break
             case .noResults:
+                showNothingFoundLabel()
                 break
             case .results(let list):
                 tileButtons(list)
@@ -217,13 +218,32 @@ class LandscapeViewController: UIViewController {
         view.viewWithTag(1000)?.removeFromSuperview()  // indicatorは強参照されていないのでオプショナルチェインが必要
     }
     
+    private func showNothingFoundLabel() {
+        let label = UILabel(frame: CGRect.zero)
+        label.text = "Noting Found"
+        label.textColor = UIColor.white
+        label.backgroundColor = UIColor.clear
+        
+        label.sizeToFit()
+        
+        var rect = label.frame
+        rect.size.width  = ceil(rect.size.width/2)  * 2  // make even
+        rect.size.height = ceil(rect.size.height/2) * 2  // make even
+        label.frame = rect
+        
+        label.center = CGPoint(x: scrollView.bounds.midX, y: scrollView.bounds.midY)  // 画面サイズはevenなのでここは補正しないでOK
+        view.addSubview(label)
+    }
+    
     // MARK:- Public Methods
     func searchResultsReceived() {
         hideSpinner()
         
         switch search.state {
-        case .notSearchedYet, .loading, .noResults:
+        case .notSearchedYet, .loading:
             break
+        case .noResults:
+            showNothingFoundLabel()
         case .results(let list):
             tileButtons(list)
         }
