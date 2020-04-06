@@ -1,0 +1,8 @@
+/* 
+  InfoPlist.strings
+  StoreSearch
+
+  Created by HIROKI IKEUCHI on 2020/04/06.
+  Copyright © 2020 ikeh1024. All rights reserved.
+*/
+CFBundleDisplayName = "StoreZoeker";
