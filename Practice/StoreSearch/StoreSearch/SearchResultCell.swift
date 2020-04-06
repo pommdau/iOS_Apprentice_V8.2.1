@@ -43,7 +43,7 @@ class SearchResultCell: UITableViewCell {
         if result.artist.isEmpty {
             artistNameLabel.text = NSLocalizedString("Unknown", comment: "Artist name: Unknown")
         } else {
-            artistNameLabel.text = String(format: NSLocalizedString("ARTIST_NAME_LABEL_FORMAT", comment: "Format for artist name"),
+            artistNameLabel.text = String(format: NSLocalizedString("ARTIST_NAME_LABEL_FORMAT", comment: "Format for artist name label"),
                                           result.artist, result.type)
             
         }
