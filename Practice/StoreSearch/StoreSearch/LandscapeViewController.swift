@@ -13,7 +13,7 @@ class LandscapeViewController: UIViewController {
     @IBOutlet weak var scrollView : UIScrollView!
     @IBOutlet weak var pageControl: UIPageControl!
     
-    var searchResults = [SearchResult]()
+    var search: Search!
     private var firstTime = true
     private var downloads = [URLSessionDownloadTask]()  // ダウンロードを途中でキャンセルするためのプロパティ
     
@@ -77,7 +77,19 @@ class LandscapeViewController: UIViewController {
         // 一回だけ呼ばれるようにfirstTime変数を使う
         if firstTime {
             firstTime = false
-            tileButtons(searchResults)
+            
+            switch search.state {
+            case .notSearchedYet:
+                break
+            case .loading:
+                showSpinner()
+                break
+            case .noResults:
+                showNothingFoundLabel()
+                break
+            case .results(let list):
+                tileButtons(list)
+            }
         }
     }
     
@@ -98,6 +110,16 @@ class LandscapeViewController: UIViewController {
         // Pass the selected object to the new view controller.
     }
     */
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "ShowDetail" {
+            if case .results(let list) = search.state {
+                let detailViewController = segue.destination as! DetailViewController
+                let searchResult = list[(sender as! UIButton).tag - 2000]
+                detailViewController.searchResult = searchResult
+            }
+        }
+    }
 
     // MARK:- Private Methods
     private func tileButtons(_ searchResults: [SearchResult]) {
@@ -162,6 +184,10 @@ class LandscapeViewController: UIViewController {
                                   y: marginY + CGFloat(row)*itemHeight + paddingVert,
                                   width: buttonWidth,
                                   height: buttonHeihgt)
+            button.tag = 2000 + index  // tag=0はViewに使われているので2000から始める。また1000はspinnerですでに使われている。
+            button.addTarget(self, action: #selector(buttonPressed),
+                             for: .touchUpInside)
+            
             downloadImage(for:result, andPlaceOn: button)
             scrollView.addSubview(button)
 
@@ -190,6 +216,52 @@ class LandscapeViewController: UIViewController {
         pageControl.currentPage   = 0
     }
     
+    private func showSpinner() {
+        let spinner = UIActivityIndicatorView(style: .large)
+        // 0.5はスピーナーの左上の座標を小数点としないため
+        // spinnerの幅と高さは37Point
+        // 例えば中心座標が(284,160)とすると、18.5を引いた、スピナーの左上の座標は(265.5,141.5)となってしまう
+        spinner.center = CGPoint(x: scrollView.bounds.midX + 0.5,
+                                 y: scrollView.bounds.midY + 0.5)
+        spinner.tag = 1000  // 後で削除するためにタグをつけておく
+        view.addSubview(spinner)
+        spinner.startAnimating()
+    }
+    
+    private func hideSpinner() {
+        view.viewWithTag(1000)?.removeFromSuperview()  // indicatorは強参照されていないのでオプショナルチェインが必要
+    }
+    
+    private func showNothingFoundLabel() {
+        let label = UILabel(frame: CGRect.zero)
+        label.text = "Noting Found"
+        label.textColor = UIColor.white
+        label.backgroundColor = UIColor.clear
+        
+        label.sizeToFit()
+        
+        var rect = label.frame
+        rect.size.width  = ceil(rect.size.width/2)  * 2  // make even
+        rect.size.height = ceil(rect.size.height/2) * 2  // make even
+        label.frame = rect
+        
+        label.center = CGPoint(x: scrollView.bounds.midX, y: scrollView.bounds.midY)  // 画面サイズはevenなのでここは補正しないでOK
+        view.addSubview(label)
+    }
+    
+    // MARK:- Public Methods
+    func searchResultsReceived() {
+        hideSpinner()
+        
+        switch search.state {
+        case .notSearchedYet, .loading:
+            break
+        case .noResults:
+            showNothingFoundLabel()
+        case .results(let list):
+            tileButtons(list)
+        }
+    }
     
     // MARK:- Actions
     @IBAction func pageChanged(_ sender: UIPageControl) {
@@ -201,6 +273,10 @@ class LandscapeViewController: UIViewController {
                         self.scrollView.contentOffset = CGPoint(x: self.scrollView.bounds.size.width * CGFloat(sender.currentPage),
                                                            y: 0)
         }, completion: nil)
+    }
+    
+    @objc func buttonPressed(_ sender: UIButton) {
+        performSegue(withIdentifier: "ShowDetail", sender: sender)
     }
 }
 

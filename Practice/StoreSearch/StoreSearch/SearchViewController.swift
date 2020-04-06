@@ -22,10 +22,7 @@ class SearchViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var segmentedControl: UISegmentedControl!
     
-    var searchResults = [SearchResult]()
-    var hasSearched   = false  // 検索を既に行った状態かどうか
-    var isLoading     = false  // ネットワークと通信中かどうか
-    var dataTask    : URLSessionDataTask?  // 通信用のオブジェクト
+    private var search = Search()
     var landscapeVC : LandscapeViewController?
     
     override func viewDidLoad() {
@@ -73,17 +70,6 @@ class SearchViewController: UIViewController {
         performSearch()
     }
     
-    func parse(data: Data) -> [SearchResult] {
-        do {
-            let decoder = JSONDecoder()
-            let result = try decoder.decode(ResultArray.self, from: data)
-            return result.results
-        } catch {
-            print("JSON Error: \(error)")
-            return []
-        }
-    }
-    
     func showNetworkError() {
         let alert = UIAlertController(title: "Whoops...",
                                       message:
@@ -97,29 +83,11 @@ class SearchViewController: UIViewController {
     }
     
     // MARK:- Heloper Methods
-    func iTunesURL(searchText: String, category: Int) -> URL {
-        let kind: String
-        switch category {
-        case 1: kind = "musicTrack"
-        case 2: kind = "software"
-        case 3: kind = "ebook"
-        default: kind = ""  // All:0
-        }
-        
-        // スペースなどをパーセントエンコーディングする
-        let encodedText = searchText.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)!
-        let urlString = "https://itunes.apple.com/search?" +
-        "term=\(encodedText)&&limit=200&entity=\(kind)"
-        
-        let url = URL(string: urlString)
-        return url!
-    }
-    
     func showLandscape(with coordinator: UIViewControllerTransitionCoordinator) {
         guard landscapeVC == nil else { return }  // すでに表示されているならば何もしない
         landscapeVC = storyboard!.instantiateViewController(withIdentifier: "LandscapeViewController") as? LandscapeViewController
         if let controller = landscapeVC {  // SearchViewControllerにLandscapeVIewControllerをChildとして埋め込む
-            controller.searchResults = searchResults  // viewDidLoad()を呼ぶためのトリガとなるので、controller.viewにアクセスする前に呼ぶ必要がある
+            controller.search = search  // viewDidLoad()を呼ぶためのトリガとなるので、controller.viewにアクセスする前に呼ぶ必要がある
             
             controller.view.frame = view.bounds  // SearchViewControllerの大きさにする
             controller.view.alpha = 0  // for crossfade
@@ -144,6 +112,9 @@ class SearchViewController: UIViewController {
             controller.willMove(toParent: nil)
             coordinator.animate(alongsideTransition: { _ in
                 controller.view.alpha = 0
+                if self.presentedViewController != nil {    // DetailViewControllerが表示されているならばcloseする
+                    self.dismiss(animated: true, completion: nil)
+                }
             }, completion: { _ in
                 controller.view.removeFromSuperview()
                 controller.removeFromParent()
@@ -156,10 +127,12 @@ class SearchViewController: UIViewController {
     // MARK:- Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowDetail" {
-            let detailViewController = segue.destination as! DetailViewController
-            let indexPath            = sender as! IndexPath
-            let searchResult         = searchResults[indexPath.row]
-            detailViewController.searchResult = searchResult
+            if case .results(let list) = search.state {
+                let detailViewController = segue.destination as! DetailViewController
+                let indexPath            = sender as! IndexPath
+                let searchResult         = list[indexPath.row]
+                detailViewController.searchResult = searchResult
+            }
         }
     }
 }
@@ -170,43 +143,18 @@ extension SearchViewController: UISearchBarDelegate {
     }
     
     func performSearch() {
-        if !searchBar.text!.isEmpty {
-            searchBar.resignFirstResponder()
-            dataTask?.cancel()  // 前の検索が残っている場合は中断する
-            
-            isLoading = true
-            tableView.reloadData()
-            hasSearched = true
-            searchResults = []
-            
-            let url      = iTunesURL(searchText: searchBar.text!, category: segmentedControl.selectedSegmentIndex)
-            let session  = URLSession.shared
-            dataTask = session.dataTask(with: url, completionHandler: { data, response, error in
-                if let error = error as NSError?, error.code == -999 {
-                    return  // Search was cancelled
-                } else if let httpResponse = response as? HTTPURLResponse,
-                    httpResponse.statusCode == 200 {
-                    if let data = data {
-                        self.searchResults = self.parse(data: data)
-                        self.searchResults.sort(by: <)
-                        DispatchQueue.main.async {
-                            self.isLoading = false
-                            self.tableView.reloadData()
-                        }
-                        return
-                    }
-                } else {
-                    print("Failure! \(response!)")
-                }
-                // エラーが発生したときは下記を通る
-                DispatchQueue.main.async {
-                  self.hasSearched = false
-                  self.isLoading = false
-                  self.tableView.reloadData()
-                  self.showNetworkError()
-                }
+        if let category = Search.Category(rawValue: segmentedControl.selectedSegmentIndex) {
+            search.performSearch(for: searchBar.text!,
+                                 category: category,
+                                 completion: { success in
+                                    if !success {
+                                        self.showNetworkError()
+                                    }
+                                    self.tableView.reloadData()
+                                    self.landscapeVC?.searchResultsReceived()  // landscapeではない場合は何もしない。Optional chaningはif let~と同じだが簡潔に書ける。
             })
-            dataTask?.resume()  // 通信開始
+            tableView.reloadData()
+            searchBar.resignFirstResponder()
         }
     }
     
@@ -217,31 +165,36 @@ extension SearchViewController: UISearchBarDelegate {
 
 extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if isLoading {
-            return 1
-        } else if !hasSearched {
+        switch search.state {
+        case .notSearchedYet:
             return 0
-        } else if searchResults.count == 0 {
+        case .loading:
             return 1
-        } else {
-            return searchResults.count
+        case .noResults:
+            return 1
+        case .results(let list):
+            return list.count
         }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if isLoading {
+        switch search.state {
+        case .notSearchedYet:
+            fatalError("Should never get here")
+            
+        case .loading:
             let cell = tableView.dequeueReusableCell(withIdentifier: TableView.CellIdentifiers.loadingCell, for: indexPath)
             let spinner = cell.viewWithTag(100) as! UIActivityIndicatorView
             spinner.startAnimating()
-            
             return cell
-        } else if searchResults.count == 0 {  // 検索結果が0の場合
-            return tableView.dequeueReusableCell(withIdentifier: TableView.CellIdentifiers.nothingFoundCell, for: indexPath)
-        } else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: TableView.CellIdentifiers.searchResultCell, for: indexPath) as! SearchResultCell
-            let searchResult = searchResults[indexPath.row]
-            cell.configure(for: searchResult)
             
+        case .noResults:
+            return tableView.dequeueReusableCell(withIdentifier: TableView.CellIdentifiers.nothingFoundCell, for: indexPath)
+            
+        case .results(let list):
+            let cell = tableView.dequeueReusableCell(withIdentifier: TableView.CellIdentifiers.searchResultCell, for: indexPath) as! SearchResultCell
+            let searchResult = list[indexPath.row]
+            cell.configure(for: searchResult)
             return cell
         }
     }
@@ -253,11 +206,11 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-        if searchResults.count == 0 || isLoading {
+        switch search.state {
+        case .notSearchedYet, .loading, .noResults:
             return nil
-        } else {
+        case .results:
             return indexPath
         }
     }
-    
 }

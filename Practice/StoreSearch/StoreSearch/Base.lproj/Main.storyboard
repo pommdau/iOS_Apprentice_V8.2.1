@@ -70,7 +70,7 @@
                     <connections>
                         <outlet property="searchBar" destination="KJ9-6G-4JW" id="7DU-44-aGR"/>
                         <outlet property="segmentedControl" destination="Ytq-1l-XxJ" id="0fK-og-4HS"/>
-                        <outlet property="tableView" destination="D5V-OU-RAH" id="Ur6-ND-FY7"/>
+                        <outlet property="tableView" destination="D5V-OU-RAH" id="xAy-dz-MP9"/>
                         <segue destination="Wu3-ct-xTZ" kind="presentation" identifier="ShowDetail" id="Crv-RG-KZN"/>
                     </connections>
                 </viewController>
@@ -232,13 +232,17 @@
                     <connections>
                         <outlet property="pageControl" destination="2AM-Yo-xLq" id="8J2-mE-tDd"/>
                         <outlet property="scrollView" destination="jmu-Qn-YeG" id="yco-zC-ZNX"/>
+                        <segue destination="Wu3-ct-xTZ" kind="showDetail" identifier="ShowDetail" id="6VL-Dt-2lM"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="pPC-8g-Plx" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1650" y="129.375"/>
+            <point key="canvasLocation" x="138" y="938"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="Crv-RG-KZN"/>
+    </inferredMetricsTieBreakers>
     <resources>
         <image name="CloseButton" width="15" height="15"/>
         <image name="PriceButton" width="10.5" height="24"/>
