@@ -147,6 +147,7 @@ extension SearchViewController: UISearchBarDelegate {
                                     if !success {
                                         self.showNetworkError()
                                     }
+                                    self.landscapeVC?.searchResultsReceived()  // landscapeではない場合は何もしない。Optional chaningはif let~と同じだが簡潔に書ける。
                                     self.tableView.reloadData()
             })
         }
