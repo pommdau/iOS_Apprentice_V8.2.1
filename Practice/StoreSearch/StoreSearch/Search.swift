@@ -38,6 +38,7 @@ class Search {
     
     func performSearch(for text: String, category: Category, completion: @escaping SearchComplete) {
         if !text.isEmpty {
+            dataTask?.cancel()
             state = .loading
 
             let url      = iTunesURL(searchText: text, category: category)

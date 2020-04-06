@@ -110,6 +110,16 @@ class LandscapeViewController: UIViewController {
         // Pass the selected object to the new view controller.
     }
     */
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "ShowDetail" {
+            if case .results(let list) = search.state {
+                let detailViewController = segue.destination as! DetailViewController
+                let searchResult = list[(sender as! UIButton).tag - 2000]
+                detailViewController.searchResult = searchResult
+            }
+        }
+    }
 
     // MARK:- Private Methods
     private func tileButtons(_ searchResults: [SearchResult]) {
@@ -174,6 +184,10 @@ class LandscapeViewController: UIViewController {
                                   y: marginY + CGFloat(row)*itemHeight + paddingVert,
                                   width: buttonWidth,
                                   height: buttonHeihgt)
+            button.tag = 2000 + index  // tag=0はViewに使われているので2000から始める。また1000はspinnerですでに使われている。
+            button.addTarget(self, action: #selector(buttonPressed),
+                             for: .touchUpInside)
+            
             downloadImage(for:result, andPlaceOn: button)
             scrollView.addSubview(button)
 
@@ -259,6 +273,10 @@ class LandscapeViewController: UIViewController {
                         self.scrollView.contentOffset = CGPoint(x: self.scrollView.bounds.size.width * CGFloat(sender.currentPage),
                                                            y: 0)
         }, completion: nil)
+    }
+    
+    @objc func buttonPressed(_ sender: UIButton) {
+        performSegue(withIdentifier: "ShowDetail", sender: sender)
     }
 }
 

@@ -112,6 +112,9 @@ class SearchViewController: UIViewController {
             controller.willMove(toParent: nil)
             coordinator.animate(alongsideTransition: { _ in
                 controller.view.alpha = 0
+                if self.presentedViewController != nil {    // DetailViewControllerが表示されているならばcloseする
+                    self.dismiss(animated: true, completion: nil)
+                }
             }, completion: { _ in
                 controller.view.removeFromSuperview()
                 controller.removeFromParent()
@@ -147,8 +150,8 @@ extension SearchViewController: UISearchBarDelegate {
                                     if !success {
                                         self.showNetworkError()
                                     }
-                                    self.landscapeVC?.searchResultsReceived()  // landscapeではない場合は何もしない。Optional chaningはif let~と同じだが簡潔に書ける。
                                     self.tableView.reloadData()
+                                    self.landscapeVC?.searchResultsReceived()  // landscapeではない場合は何もしない。Optional chaningはif let~と同じだが簡潔に書ける。
             })
         }
         
