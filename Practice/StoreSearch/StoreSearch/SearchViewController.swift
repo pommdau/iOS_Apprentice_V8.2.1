@@ -153,10 +153,9 @@ extension SearchViewController: UISearchBarDelegate {
                                     self.tableView.reloadData()
                                     self.landscapeVC?.searchResultsReceived()  // landscapeではない場合は何もしない。Optional chaningはif let~と同じだが簡潔に書ける。
             })
+            tableView.reloadData()
+            searchBar.resignFirstResponder()
         }
-        
-        tableView.reloadData()
-        searchBar.resignFirstResponder()
     }
     
     func position(for bar: UIBarPositioning) -> UIBarPosition {
@@ -172,7 +171,7 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
         case .loading:
             return 1
         case .noResults:
-            return 0
+            return 1
         case .results(let list):
             return list.count
         }
