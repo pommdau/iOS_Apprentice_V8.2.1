@@ -24,9 +24,12 @@ class SearchViewController: UIViewController {
     
     private var search = Search()
     var landscapeVC : LandscapeViewController?
+    weak var splitViewDetail: DetailViewController?  // for iPad
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        title = NSLocalizedString("Search", comment: "split view master button")  // iPadのときNavigationBarに表示するラベルの設定
         
         // 64ポイントのマージンを上部に取る設定。20:Status Bar, 44:SearchBar, 44:Segmented Control
         tableView.contentInset = UIEdgeInsets(top: 108, left: 0, bottom: 0, right: 0 )
@@ -198,9 +201,17 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
+        // SearchViewControllerはiPadでもSplitViewのmaster側なので.compactになる
+        // よってrootViewControllerをここでは取っている
+        if view.window!.rootViewController!.traitCollection.horizontalSizeClass == .compact {  // iPhoneのとき
+            tableView.deselectRow(at: indexPath, animated: true)
+            performSegue(withIdentifier: "ShowDetail", sender: indexPath)
+        } else {
+            if case .results(let list) = search.state {
+                splitViewDetail?.searchResult = list[indexPath.row]
+            }
+        }
         
-        performSegue(withIdentifier: "ShowDetail", sender: indexPath)
     }
     
     func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {

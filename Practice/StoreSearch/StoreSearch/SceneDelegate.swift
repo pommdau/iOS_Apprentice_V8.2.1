@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -18,6 +19,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let _ = (scene as? UIWindowScene) else { return }
+        
+        detailVC.navigationItem.leftBarButtonItem = splitVC.displayModeButtonItem
+        searchVC.splitViewDetail = detailVC
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -48,6 +52,27 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
     }
 
-
+    
+    // MARK:- Properties
+    
+    // The top-level view controller.
+    var splitVC: UISplitViewController {
+        return window!.rootViewController as! UISplitViewController
+    }
+    
+    // The Search screen in the master pane of the split view.
+    var searchVC: SearchViewController {
+        return splitVC.viewControllers.first as! SearchViewController
+    }
+    
+    // The UINavigationController in the detail pane of the split view.
+    var detailNavController: UINavigationController {
+        return splitVC.viewControllers.last as! UINavigationController
+    }
+    
+    // The Detail screen inside the UINavigationController.
+    var detailVC: DetailViewController {
+        return detailNavController.topViewController as! DetailViewController
+    }
 }
 

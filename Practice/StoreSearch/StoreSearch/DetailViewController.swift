@@ -18,7 +18,13 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var genreLabel       : UILabel!
     @IBOutlet weak var priceButton      : UIButton!
     
-    var searchResult: SearchResult!
+    var searchResult: SearchResult! {
+        didSet {
+            if isViewLoaded {
+                updateUI()
+            }
+        }
+    }
     var downloadTask: URLSessionDownloadTask?  // 詳細画像をダウンロードするためのもの
     
     enum AnimationStyle {
@@ -26,6 +32,7 @@ class DetailViewController: UIViewController {
         case fade
     }
     var dismissStyle = AnimationStyle.fade
+    var ispopUp = false  // 自信をポップアップで表示するかどうか（iPadではポップアップしない）
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -51,10 +58,18 @@ class DetailViewController: UIViewController {
         //
         // popupView内は以下のメソッドで無効になっている。
         // gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool
-        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(close))
-        gestureRecognizer.cancelsTouchesInView = false
-        gestureRecognizer.delegate = self
-        view.addGestureRecognizer(gestureRecognizer)
+        if ispopUp {
+            let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(close))
+            gestureRecognizer.cancelsTouchesInView = false
+            gestureRecognizer.delegate = self
+            view.addGestureRecognizer(gestureRecognizer)
+            
+            view.backgroundColor = UIColor.clear
+        } else {
+            // iPadではgestureは無し
+            view.backgroundColor = UIColor(patternImage: UIImage(named: "LandscapeBackground")!)
+            popupView.isHidden = true  // テーブルで選択されるまで隠しておく
+        }
         
         if searchResult != nil {
             updateUI()  // just in case the developer forgets to fill in searchResult on the segue.
@@ -119,6 +134,8 @@ class DetailViewController: UIViewController {
         if let largeURL = URL(string: searchResult.imageLarge) {
             downloadTask = artworkImageView.loadImage(url: largeURL)
         }
+        
+        popupView.isHidden = false
     }
 }
 
