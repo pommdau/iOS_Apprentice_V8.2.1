@@ -44,9 +44,11 @@ class SearchViewController: UIViewController {
         cellNib = UINib(nibName: TableView.CellIdentifiers.loadingCell, bundle: nil)
         tableView.register(cellNib, forCellReuseIdentifier: TableView.CellIdentifiers.loadingCell)
         
-        // キーボードを表示する
-        searchBar.becomeFirstResponder()
-        
+        // iPad以外のときにキーボードを表示する
+        if UIDevice.current.userInterfaceIdiom != .pad {
+            searchBar.becomeFirstResponder()
+        }
+       
         let segmentColor = UIColor(red: 10/255, green: 80/255, blue: 80/255, alpha: 1)
         let normalTextAttributes   = [NSAttributedString.Key.foregroundColor: segmentColor]
         let selectedTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
@@ -163,6 +165,16 @@ extension SearchViewController: UISearchBarDelegate {
     func position(for bar: UIBarPositioning) -> UIBarPosition {
         return .topAttached
     }
+    
+    // ViewControllerがUISplitViewControllerの中にある場合、built in propertyとして「splitViewController」を持つ
+    private func hideMasterPane() {
+        UIView.animate(withDuration: 0.25,
+                       animations: {
+                        self.splitViewController!.preferredDisplayMode = .primaryHidden
+        }, completion: { _ in
+            self.splitViewController!.preferredDisplayMode = .automatic
+        })
+    }
 }
 
 extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
@@ -207,12 +219,17 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
         if view.window!.rootViewController!.traitCollection.horizontalSizeClass == .compact {  // iPhoneのとき
             tableView.deselectRow(at: indexPath, animated: true)
             performSegue(withIdentifier: "ShowDetail", sender: indexPath)
-        } else {
+        } else {  // iPadのとき
             if case .results(let list) = search.state {
                 splitViewDetail?.searchResult = list[indexPath.row]
+                
+                // .allVisibleはlandscapeのときのみ有効
+                // -> landscape出ない場合に行が選択されたらmaster paneを隠す
+                if splitViewController!.displayMode != .allVisible {
+                    hideMasterPane()
+                }
             }
         }
-        
     }
     
     func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
