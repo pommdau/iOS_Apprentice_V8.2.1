@@ -69,6 +69,10 @@ class DetailViewController: UIViewController {
             // iPadではgestureは無し
             view.backgroundColor = UIColor(patternImage: UIImage(named: "LandscapeBackground")!)
             popupView.isHidden = true  // テーブルで選択されるまで隠しておく
+            
+            if let displayName = Bundle.main.localizedInfoDictionary?["CFBundleDisplayName"] as? String {
+                title = displayName
+            }
         }
         
         if searchResult != nil {
