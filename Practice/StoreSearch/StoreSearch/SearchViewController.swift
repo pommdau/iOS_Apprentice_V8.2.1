@@ -24,9 +24,12 @@ class SearchViewController: UIViewController {
     
     private var search = Search()
     var landscapeVC : LandscapeViewController?
+    weak var splitViewDetail: DetailViewController?  // for iPad
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        title = NSLocalizedString("Search", comment: "split view master button")  // iPadのときNavigationBarに表示するラベルの設定
         
         // 64ポイントのマージンを上部に取る設定。20:Status Bar, 44:SearchBar, 44:Segmented Control
         tableView.contentInset = UIEdgeInsets(top: 108, left: 0, bottom: 0, right: 0 )
@@ -41,9 +44,11 @@ class SearchViewController: UIViewController {
         cellNib = UINib(nibName: TableView.CellIdentifiers.loadingCell, bundle: nil)
         tableView.register(cellNib, forCellReuseIdentifier: TableView.CellIdentifiers.loadingCell)
         
-        // キーボードを表示する
-        searchBar.becomeFirstResponder()
-        
+        // iPad以外のときにキーボードを表示する
+        if UIDevice.current.userInterfaceIdiom != .pad {
+            searchBar.becomeFirstResponder()
+        }
+       
         let segmentColor = UIColor(red: 10/255, green: 80/255, blue: 80/255, alpha: 1)
         let normalTextAttributes   = [NSAttributedString.Key.foregroundColor: segmentColor]
         let selectedTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
@@ -56,13 +61,22 @@ class SearchViewController: UIViewController {
     override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
         super.willTransition(to: newCollection, with: coordinator)
         
-        switch newCollection.verticalSizeClass {
-        case .compact:  // iPhone Landscape, iPhone 6 plus Landscape
-            showLandscape(with: coordinator)
-        case .regular, .unspecified:  // iPhone Portrait, iPad Portrait/Landscape
-            hideLandscape(with: coordinator)
-        @unknown default:
-            fatalError()
+        let rect = UIScreen.main.bounds
+        if (rect.width == 736 && rect.height == 414) ||  // portrait (iPhone Plus)
+            (rect.width == 414 && rect.height == 736) {  // landscape(iPhone Plus)
+            // iPhone Plusの場合
+            if presentedViewController != nil {
+                dismiss(animated: true, completion: nil)  // Detail pop-upがあれば非表示にする
+            }
+        } else if UIDevice.current.userInterfaceIdiom != .pad {
+            switch newCollection.verticalSizeClass {
+            case .compact:  // iPhone Landscape, iPhone 6 plus Landscape
+                showLandscape(with: coordinator)
+            case .regular, .unspecified:  // iPhone Portrait, iPad Portrait/Landscape
+                hideLandscape(with: coordinator)
+            @unknown default:
+                fatalError()
+            }
         }
     }
     
@@ -130,6 +144,7 @@ class SearchViewController: UIViewController {
                 let indexPath            = sender as! IndexPath
                 let searchResult         = list[indexPath.row]
                 detailViewController.searchResult = searchResult
+                detailViewController.ispopUp      = true
             }
         }
     }
@@ -158,6 +173,16 @@ extension SearchViewController: UISearchBarDelegate {
     
     func position(for bar: UIBarPositioning) -> UIBarPosition {
         return .topAttached
+    }
+    
+    // ViewControllerがUISplitViewControllerの中にある場合、built in propertyとして「splitViewController」を持つ
+    private func hideMasterPane() {
+        UIView.animate(withDuration: 0.25,
+                       animations: {
+                        self.splitViewController!.preferredDisplayMode = .primaryHidden
+        }, completion: { _ in
+            self.splitViewController!.preferredDisplayMode = .automatic
+        })
     }
 }
 
@@ -198,9 +223,22 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        
-        performSegue(withIdentifier: "ShowDetail", sender: indexPath)
+        // SearchViewControllerはiPadでもSplitViewのmaster側なので.compactになる
+        // よってrootViewControllerをここでは取っている
+        if view.window!.rootViewController!.traitCollection.horizontalSizeClass == .compact {  // iPhoneのとき
+            tableView.deselectRow(at: indexPath, animated: true)
+            performSegue(withIdentifier: "ShowDetail", sender: indexPath)
+        } else {  // iPadのとき
+            if case .results(let list) = search.state {
+                splitViewDetail?.searchResult = list[indexPath.row]
+                
+                // .allVisibleはlandscapeのときのみ有効
+                // -> landscape出ない場合に行が選択されたらmaster paneを隠す
+                if splitViewController!.displayMode != .allVisible {
+                    hideMasterPane()
+                }
+            }
+        }
     }
     
     func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {

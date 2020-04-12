@@ -19,6 +19,7 @@
 		2AB5E343241E336000844A3E /* SearchResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AB5E342241E335F00844A3E /* SearchResult.swift */; };
 		2AF54307241E4D5E00ED662F /* SearchResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AF54306241E4D5E00ED662F /* SearchResultCell.swift */; };
 		D00854EC242C729A004FF26F /* UIImageView+DownloadImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00854EB242C729A004FF26F /* UIImageView+DownloadImage.swift */; };
+		D01AA86C244334F90013618E /* MenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01AA86B244334F90013618E /* MenuViewController.swift */; };
 		D0668E1B2437197B00B4AA82 /* Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0668E1A2437197B00B4AA82 /* Search.swift */; };
 		D0A5D729242D6CDD00C076BC /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A5D728242D6CDD00C076BC /* DetailViewController.swift */; };
 		D0A5D72B242D745700C076BC /* DimmingPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A5D72A242D745700C076BC /* DimmingPresentationController.swift */; };
@@ -45,6 +46,7 @@
 		2AB5E342241E335F00844A3E /* SearchResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResult.swift; sourceTree = "<group>"; };
 		2AF54306241E4D5E00ED662F /* SearchResultCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultCell.swift; sourceTree = "<group>"; };
 		D00854EB242C729A004FF26F /* UIImageView+DownloadImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+DownloadImage.swift"; sourceTree = "<group>"; };
+		D01AA86B244334F90013618E /* MenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuViewController.swift; sourceTree = "<group>"; };
 		D0668E1A2437197B00B4AA82 /* Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Search.swift; sourceTree = "<group>"; };
 		D0A5D728242D6CDD00C076BC /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		D0A5D72A242D745700C076BC /* DimmingPresentationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DimmingPresentationController.swift; sourceTree = "<group>"; };
@@ -109,6 +111,7 @@
 				2A0FDB8B24309B8D00AD3782 /* GradientView.swift */,
 				D0A655742431CD09006E02BC /* LandscapeViewController.swift */,
 				D0668E1A2437197B00B4AA82 /* Search.swift */,
+				D01AA86B244334F90013618E /* MenuViewController.swift */,
 				2AB5E337241DE91900844A3E /* Assets.xcassets */,
 				2AB5E33C241DE91900844A3E /* Info.plist */,
 				D0ACF65D243B035800803112 /* Localizable.strings */,
@@ -194,6 +197,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2AB5E333241DE91500844A3E /* SearchViewController.swift in Sources */,
+				D01AA86C244334F90013618E /* MenuViewController.swift in Sources */,
 				2AB5E32F241DE91500844A3E /* AppDelegate.swift in Sources */,
 				D00854EC242C729A004FF26F /* UIImageView+DownloadImage.swift in Sources */,
 				D0A5D72B242D745700C076BC /* DimmingPresentationController.swift in Sources */,
@@ -389,8 +393,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = BWMJMJK727;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = StoreSearch/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -398,6 +403,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.gmail.ikeh1024.StoreSearch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -407,8 +413,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = BWMJMJK727;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = StoreSearch/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -416,6 +423,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.gmail.ikeh1024.StoreSearch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
