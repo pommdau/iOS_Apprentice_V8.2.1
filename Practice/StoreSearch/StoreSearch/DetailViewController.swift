@@ -190,10 +190,21 @@ extension DetailViewController: MenuViewControllerDelegate {
         dismiss(animated: true) {
             if MFMailComposeViewController.canSendMail() {
                 let controller = MFMailComposeViewController()
+                controller.mailComposeDelegate = self
+                controller.modalPresentationStyle = .formSheet  // メール画面のフォーマットを設定
                 controller.setSubject(NSLocalizedString("Support Request", comment: "Email subject"))
                 controller.setToRecipients(["pondau1024@gmail.com"])
                 self.present(controller, animated: true, completion: nil)
             }
         }
+    }
+}
+
+extension DetailViewController: MFMailComposeViewControllerDelegate {
+    func mailComposeController(_ controller: MFMailComposeViewController,
+                               didFinishWith result: MFMailComposeResult,
+                               error: Error?) {
+        // Cancel or Sendでメール画面を閉じる
+        dismiss(animated: true, completion: nil)
     }
 }
