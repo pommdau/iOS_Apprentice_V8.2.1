@@ -61,13 +61,22 @@ class SearchViewController: UIViewController {
     override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
         super.willTransition(to: newCollection, with: coordinator)
         
-        switch newCollection.verticalSizeClass {
-        case .compact:  // iPhone Landscape, iPhone 6 plus Landscape
-            showLandscape(with: coordinator)
-        case .regular, .unspecified:  // iPhone Portrait, iPad Portrait/Landscape
-            hideLandscape(with: coordinator)
-        @unknown default:
-            fatalError()
+        let rect = UIScreen.main.bounds
+        if (rect.width == 736 && rect.height == 414) ||  // portrait (iPhone Plus)
+            (rect.width == 414 && rect.height == 736) {  // landscape(iPhone Plus)
+            // iPhone Plusの場合
+            if presentedViewController != nil {
+                dismiss(animated: true, completion: nil)  // Detail pop-upがあれば非表示にする
+            }
+        } else if UIDevice.current.userInterfaceIdiom != .pad {
+            switch newCollection.verticalSizeClass {
+            case .compact:  // iPhone Landscape, iPhone 6 plus Landscape
+                showLandscape(with: coordinator)
+            case .regular, .unspecified:  // iPhone Portrait, iPad Portrait/Landscape
+                hideLandscape(with: coordinator)
+            @unknown default:
+                fatalError()
+            }
         }
     }
     
