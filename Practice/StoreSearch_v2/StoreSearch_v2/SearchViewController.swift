@@ -24,6 +24,7 @@ class SearchViewController: UIViewController {
     }
 }
 
+// MARK:- UISearchBarDelegate
 extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()  // hide keyboard
@@ -48,6 +49,7 @@ extension SearchViewController: UISearchBarDelegate {
     }
 }
 
+// MARK:- UITableViewDelegate, UITableViewDataSource
 extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView,
                    numberOfRowsInSection section: Int) -> Int {
@@ -79,5 +81,17 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
         }
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        if searchResults.count == 0 {
+            return nil
+        } else {
+            return indexPath
+        }
     }
 }
