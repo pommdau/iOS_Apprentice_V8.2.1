@@ -61,11 +61,17 @@ class HudView: UIView {
         if animated {
             alpha = 0  // 最初は完全に透明の状態
             transform = CGAffineTransform(scaleX: 1.3, y: 1.3)  // 1.3倍にする設定
-            UIView.animate(withDuration: 0.3, animations: {
-                self.alpha = 1
-                self.transform = CGAffineTransform.identity
-            })
+            
+            UIView.animate(
+                withDuration: 0.3,
+                delay: 0,
+                usingSpringWithDamping: 0.7,
+                initialSpringVelocity: 0.5,
+                options: [],
+                animations: {
+                    self.alpha = 1
+                    self.transform = CGAffineTransform.identity
+            }, completion: nil)
         }
     }
-    
 }
