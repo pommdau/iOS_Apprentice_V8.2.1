@@ -54,7 +54,13 @@ class CurrentLocationViewController: UIViewController {
         if updatingLocation {  // Stopの場合
             stopLocationManager()
         } else {
+            // Location
             location = nil
+            
+            // Reverse Geocoding
+            placemark = nil
+            lastGeocodingError = nil
+
             startLocationManager()  // Get My Locationの場合
             updateLabels()
         }
@@ -93,6 +99,18 @@ class CurrentLocationViewController: UIViewController {
             longitudeLabel.text = String(format: "%.8f", location.coordinate.longitude)
             tagButton.isHidden = false
             messageLabel.text = ""
+            
+            // Locationが見つかっている場合、Addressの現在の情報を表示する
+            if let placemark = placemark {
+                addressLabel.text = string(from: placemark)
+            } else if performingReverseGeocoding {
+                addressLabel.text = "Searching for Address..."
+            } else if lastGeocodingError != nil {
+                addressLabel.text = "Error Finding Address"
+            } else {
+                addressLabel.text = "No Address Found"
+            }
+            
         } else {
             messageLabel.text = "Tap 'Get My Location' to Start"
             var statusMessage = ""
@@ -121,6 +139,28 @@ class CurrentLocationViewController: UIViewController {
             getButton.setTitle("Get My Locatoin", for: .normal)
         }
     }
+    
+    func string(from placemark: CLPlacemark) -> String {
+        var line1 = ""
+        if let s = placemark.subThoroughfare {
+            line1 += s + " "
+        }
+        
+        if let s = placemark.thoroughfare {
+            line1 += s
+        }
+        
+        var line2 = ""
+        if let s = placemark.locality {
+            line2 += s + " "
+        }
+        if let s = placemark.administrativeArea {
+            line2 += s
+        }
+        
+        return line1 + "\n" + line2
+    }
+    
 }
 
 
@@ -176,19 +216,20 @@ extension CurrentLocationViewController: CLLocationManagerDelegate {
                 geocoder.reverseGeocodeLocation(newLocation,
                                                 completionHandler:
                     { placemarks, error in
-                        if let error = error {
-                            print("*** Reverse Geocoding error: \(error.localizedDescription)")
-                            return
+                        self.lastGeocodingError = error
+                        if error == nil, let p = placemarks, !p.isEmpty {
+                            // reverse geocodingに成功した場合
+                            self.placemark = p.last!
+                        } else {
+                            // 失敗した場合、すでに（過去の）情報があればそれを破棄する
+                            self.placemark = nil
                         }
-                        if let places = placemarks {
-                            print("*** Found places: \(places)")
-                        }
+                        
+                        self.performingReverseGeocoding = false
+                        self.updateLabels()
                 })
             }
-            
-            
         }
     }
-    
 }
 
