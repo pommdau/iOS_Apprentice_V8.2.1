@@ -29,7 +29,8 @@ class CurrentLocationViewController: UIViewController {
     var placemark: CLPlacemark?
     var performingReverseGeocoding = false
     var lastGeocodingError: Error?
-    
+
+    var timer: Timer?  // 検索後60sでタイムアウトとする
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -82,6 +83,13 @@ class CurrentLocationViewController: UIViewController {
             locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
             locationManager.startUpdatingLocation()
             updatingLocation = true
+            
+            // 検索後60sでタイムアウトとする
+            timer = Timer.scheduledTimer(timeInterval: 60,
+                                         target: self,
+                                         selector: #selector(didTimeOut),
+                                         userInfo: nil,
+                                         repeats: false)
         }
     }
     
@@ -90,6 +98,10 @@ class CurrentLocationViewController: UIViewController {
             locationManager.stopUpdatingLocation()
             locationManager.delegate = nil
             updatingLocation = false
+            
+            if let timer = timer {
+                timer.invalidate()
+            }
         }
     }
     
@@ -159,6 +171,15 @@ class CurrentLocationViewController: UIViewController {
         }
         
         return line1 + "\n" + line2
+    }
+    
+    @objc func didTimeOut() {
+        print("*** Time out")
+        if location == nil {
+            stopLocationManager()
+            lastLocationError = NSError(domain: "MyLocationsErrorDomain", code: 1, userInfo: nil)
+            updateLabels()
+        }
     }
     
 }
