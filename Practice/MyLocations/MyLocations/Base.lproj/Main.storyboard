@@ -205,11 +205,22 @@
                             <outlet property="delegate" destination="S8E-d3-VD4" id="2fV-KH-dQ6"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Tag Location" id="Oqu-R4-pHx"/>
+                    <navigationItem key="navigationItem" title="Tag Location" id="Oqu-R4-pHx">
+                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="C2t-wS-xLL">
+                            <connections>
+                                <action selector="cancel" destination="S8E-d3-VD4" id="k86-gR-qEb"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Done" id="4Jc-69-XoS">
+                            <connections>
+                                <action selector="done" destination="S8E-d3-VD4" id="tS5-7s-X1x"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LZ2-nY-OXT" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2305" y="-322"/>
+            <point key="canvasLocation" x="2330" y="-322"/>
         </scene>
         <!--Tag-->
         <scene sceneID="ZQY-9S-15X">
