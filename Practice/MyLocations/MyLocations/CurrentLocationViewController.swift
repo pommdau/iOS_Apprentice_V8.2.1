@@ -35,8 +35,8 @@ class CurrentLocationViewController: UIViewController {
         super.viewDidLoad()
         updateLabels()
     }
-
-
+    
+    
     // MARK:- Actions
     @IBAction func getLocation() {
         let authStatus = CLLocationManager.authorizationStatus()
@@ -60,7 +60,7 @@ class CurrentLocationViewController: UIViewController {
             // Reverse Geocoding
             placemark = nil
             lastGeocodingError = nil
-
+            
             startLocationManager()  // Get My Locationの場合
             updateLabels()
         }
@@ -198,6 +198,13 @@ extension CurrentLocationViewController: CLLocationManagerDelegate {
             return
         }
         
+        // 新しい地点と前回の地点の距離を計測
+        // 前回の地点がない場合はDoubleの最大値とする
+        var distance = CLLocationDistance(Double.greatestFiniteMagnitude)
+        if let location = location {
+            distance = newLocation.distance(from: location)
+        }
+        
         if location == nil || location!.horizontalAccuracy > newLocation.horizontalAccuracy {
             lastLocationError = nil
             location = newLocation
@@ -205,29 +212,42 @@ extension CurrentLocationViewController: CLLocationManagerDelegate {
             // 精度は数値が小さいほど正確。
             // e.g. +-10m < +-100m
             if newLocation.horizontalAccuracy <= locationManager.desiredAccuracy {
-                print("we're done!")
+                print("*** We're done!")
                 stopLocationManager()
+                
+                // 常に新しい座標でreverse geocodingを行う
+                // falseにすることで既にreverse geocodingしているときも、改めてreverse geocodingを始めるようになる
+                // distanceが0の場合は同じ場所なので、改めて行う必要はない
+                if distance > 0 {
+                    performingReverseGeocoding = false
+                }
             }
             updateLabels()
-            
             if !performingReverseGeocoding {
                 print("*** Going to geocode")
                 performingReverseGeocoding = true
-                geocoder.reverseGeocodeLocation(newLocation,
-                                                completionHandler:
-                    { placemarks, error in
-                        self.lastGeocodingError = error
-                        if error == nil, let p = placemarks, !p.isEmpty {
-                            // reverse geocodingに成功した場合
-                            self.placemark = p.last!
-                        } else {
-                            // 失敗した場合、すでに（過去の）情報があればそれを破棄する
-                            self.placemark = nil
-                        }
-                        
-                        self.performingReverseGeocoding = false
-                        self.updateLabels()
+                geocoder.reverseGeocodeLocation(newLocation, completionHandler: { placemarks, error in
+                    self.lastGeocodingError = error
+                    
+                    // reverse geocodingに成功した場合
+                    if error == nil, let p = placemarks, !p.isEmpty {
+                        self.placemark = p.last!
+                    } else {
+                        // 失敗した場合、すでに（過去の）情報があればそれを破棄する
+                        self.placemark = nil
+                    }
+                    
+                    self.performingReverseGeocoding = false
+                    self.updateLabels()
                 })
+            }
+        }
+        else if distance < 1 {  // 前回との距離がほぼ変わらない場合（誤差により0となることは無いので1としている）
+            let timeInterval = newLocation.timestamp.timeIntervalSince(location!.timestamp)
+            if timeInterval > 10 {  // また10s以上経っている場合、計測を完了とする（e.g. iPodなどで精度が出ない場合）
+                print("*** Force done!")
+                stopLocationManager()
+                updateLabels()
             }
         }
     }
