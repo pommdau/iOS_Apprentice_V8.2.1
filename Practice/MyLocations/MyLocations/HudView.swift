@@ -20,6 +20,7 @@ class HudView: UIView {
         view.addSubview(hudView)
         view.isUserInteractionEnabled = false  // アクションを受け付けないようにする
         
+        hudView.show(animated: animated)
         return hudView
     }
     
@@ -53,4 +54,18 @@ class HudView: UIView {
                                 y: center.y - round(textSize.height / 2) + boxHeight / 4)
         text.draw(at: textPoint, withAttributes: attribs)
     }
+    
+    
+    // MARK:- Public methods
+    func show(animated: Bool) {
+        if animated {
+            alpha = 0  // 最初は完全に透明の状態
+            transform = CGAffineTransform(scaleX: 1.3, y: 1.3)  // 1.3倍にする設定
+            UIView.animate(withDuration: 0.3, animations: {
+                self.alpha = 1
+                self.transform = CGAffineTransform.identity
+            })
+        }
+    }
+    
 }
