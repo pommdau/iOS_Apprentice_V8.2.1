@@ -68,6 +68,18 @@ class LocationDetailsViewController: UITableViewController {
 //        navigationController?.popViewController(animated: true)
         let hudView = HudView.hud(inView: navigationController!.view, animated: true)
         hudView.text = "Tagged"
+        
+        afterDelay(0.6, run: {
+            hudView.hide()
+            self.navigationController?.popViewController(animated: true)
+        })
+        
+//        // さらに以下の書き方も可能: trailing closure syntax
+//        // closureが最後のパラメーターのときに可能
+//        afterDelay(0.6) {
+//            hudView.hide()
+//            self.navigationController?.popViewController(animated: true)
+//        })
     }
     
     @IBAction func cancel() {
