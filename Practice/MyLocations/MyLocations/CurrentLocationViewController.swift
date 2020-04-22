@@ -18,10 +18,18 @@ class CurrentLocationViewController: UIViewController {
     @IBOutlet weak var tagButton: UIButton!
     @IBOutlet weak var getButton: UIButton!
     
+    // Get Location
     let locationManager = CLLocationManager()  // CoreLocationを使用するためのオブジェクト
     var location: CLLocation?  // 現在地
     var updatingLocation = false
     var lastLocationError: Error?
+    
+    // Reverce geocoding
+    let geocoder = CLGeocoder()
+    var placemark: CLPlacemark?
+    var performingReverseGeocoding = false
+    var lastGeocodingError: Error?
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -161,6 +169,24 @@ extension CurrentLocationViewController: CLLocationManagerDelegate {
                 stopLocationManager()
             }
             updateLabels()
+            
+            if !performingReverseGeocoding {
+                print("*** Going to geocode")
+                performingReverseGeocoding = true
+                geocoder.reverseGeocodeLocation(newLocation,
+                                                completionHandler:
+                    { placemarks, error in
+                        if let error = error {
+                            print("*** Reverse Geocoding error: \(error.localizedDescription)")
+                            return
+                        }
+                        if let places = placemarks {
+                            print("*** Found places: \(places)")
+                        }
+                })
+            }
+            
+            
         }
     }
     
