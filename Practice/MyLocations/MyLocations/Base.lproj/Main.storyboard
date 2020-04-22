@@ -410,6 +410,9 @@
                                         </label>
                                     </subviews>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="TSI-VW-au5" kind="unwind" identifier="PickedCategory" unwindAction="categoryPickerDidPickCategory:" id="bRA-wb-BTm"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -420,6 +423,7 @@
                     <navigationItem key="navigationItem" id="NbX-C0-Ox6"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="82a-Dm-W3G" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <exit id="TSI-VW-au5" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="3118" y="-322"/>
         </scene>

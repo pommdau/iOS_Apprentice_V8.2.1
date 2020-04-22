@@ -36,6 +36,19 @@ class CategoryPickerViewController: UITableViewController {
             }
         }
     }
+    
+    
+    // MARK:- Navigation
+    // For unwind segue
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "PickedCategory" {
+            let cell = sender as! UITableViewCell
+            if let indexPath = tableView.indexPath(for: cell) {
+                selectedCategoryName = categories[indexPath.row]  // selectedCategoryNameは選択後、unwind segue前のここで初めて更新される
+            }
+        }
+    }
+    
 }
 
 extension CategoryPickerViewController {
