@@ -110,7 +110,7 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="(Longitude goes here)" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Pid-jX-RQ9">
-                                <rect key="frame" x="106" y="74" width="261" height="21"/>
+                                <rect key="frame" x="106" y="74" width="253" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -137,7 +137,7 @@
                             <constraint firstItem="qo6-gJ-8gS" firstAttribute="leading" secondItem="jw7-53-2ZS" secondAttribute="leading" constant="16" id="crU-R3-KbM"/>
                             <constraint firstItem="j87-KW-kdc" firstAttribute="top" secondItem="eRM-1s-KGt" secondAttribute="bottom" constant="24" id="csJ-fZ-kI9"/>
                             <constraint firstItem="L6s-dt-ym5" firstAttribute="top" secondItem="jw7-53-2ZS" secondAttribute="top" id="fwQ-jX-RTY"/>
-                            <constraint firstItem="jw7-53-2ZS" firstAttribute="trailing" secondItem="Pid-jX-RQ9" secondAttribute="trailing" constant="8" id="jE8-bQ-Yp7"/>
+                            <constraint firstItem="jw7-53-2ZS" firstAttribute="trailing" secondItem="Pid-jX-RQ9" secondAttribute="trailing" constant="16" id="jE8-bQ-Yp7"/>
                             <constraint firstItem="j87-KW-kdc" firstAttribute="leading" secondItem="jw7-53-2ZS" secondAttribute="leading" constant="16" id="jbY-jB-Myg"/>
                             <constraint firstItem="dnN-eG-aJI" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="osr-0N-HLn" secondAttribute="trailing" constant="8" id="l3c-zZ-Mzq"/>
                             <constraint firstItem="L6s-dt-ym5" firstAttribute="leading" secondItem="jw7-53-2ZS" secondAttribute="leading" constant="16" id="wSh-xz-K3y"/>
