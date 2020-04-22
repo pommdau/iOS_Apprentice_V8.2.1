@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		D06542B8245035B50065C822 /* LocationDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D06542B7245035B50065C822 /* LocationDetailsViewController.swift */; };
+		D0A9C2F92450562F003C8F2E /* CategoryPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A9C2F82450562F003C8F2E /* CategoryPickerViewController.swift */; };
 		D0FE3D90244FE6C200802A45 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FE3D8F244FE6C200802A45 /* AppDelegate.swift */; };
 		D0FE3D92244FE6C200802A45 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FE3D91244FE6C200802A45 /* SceneDelegate.swift */; };
 		D0FE3D94244FE6C200802A45 /* CurrentLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FE3D93244FE6C200802A45 /* CurrentLocationViewController.swift */; };
@@ -19,6 +20,7 @@
 
 /* Begin PBXFileReference section */
 		D06542B7245035B50065C822 /* LocationDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationDetailsViewController.swift; sourceTree = "<group>"; };
+		D0A9C2F82450562F003C8F2E /* CategoryPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryPickerViewController.swift; sourceTree = "<group>"; };
 		D0FE3D8C244FE6C200802A45 /* MyLocations.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyLocations.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D0FE3D8F244FE6C200802A45 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D0FE3D91244FE6C200802A45 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -64,6 +66,7 @@
 				D0FE3D91244FE6C200802A45 /* SceneDelegate.swift */,
 				D0FE3D93244FE6C200802A45 /* CurrentLocationViewController.swift */,
 				D06542B7245035B50065C822 /* LocationDetailsViewController.swift */,
+				D0A9C2F82450562F003C8F2E /* CategoryPickerViewController.swift */,
 				D0FE3D95244FE6C200802A45 /* SecondViewController.swift */,
 				D0FE3D97244FE6C200802A45 /* Main.storyboard */,
 				D0FE3D9A244FE6C500802A45 /* Assets.xcassets */,
@@ -144,6 +147,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D0A9C2F92450562F003C8F2E /* CategoryPickerViewController.swift in Sources */,
 				D0FE3D96244FE6C200802A45 /* SecondViewController.swift in Sources */,
 				D0FE3D94244FE6C200802A45 /* CurrentLocationViewController.swift in Sources */,
 				D0FE3D90244FE6C200802A45 /* AppDelegate.swift in Sources */,
