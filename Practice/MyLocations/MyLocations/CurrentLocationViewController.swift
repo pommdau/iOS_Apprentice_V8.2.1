@@ -43,9 +43,17 @@ class CurrentLocationViewController: UIViewController {
             return
         }
         
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-        locationManager.startUpdatingLocation()
+        startLocationManager()
+        updateLabels()
+    }
+    
+    func startLocationManager() {
+        if CLLocationManager.locationServicesEnabled() {
+            locationManager.delegate = self
+            locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+            locationManager.startUpdatingLocation()
+            updatingLocation = true
+        }
     }
     
     func stopLocationManager() {
@@ -113,7 +121,6 @@ extension CurrentLocationViewController: CLLocationManagerDelegate {
         lastLocationError = error
         stopLocationManager()
         updateLabels()
-        
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -121,6 +128,7 @@ extension CurrentLocationViewController: CLLocationManagerDelegate {
         print("didUpdateLocations \(newLocation)")
         
         location = newLocation
+        lastLocationError = nil
         updateLabels()
     }
     
