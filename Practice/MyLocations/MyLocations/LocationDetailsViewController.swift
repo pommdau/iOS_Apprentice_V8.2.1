@@ -47,6 +47,10 @@ class LocationDetailsViewController: UITableViewController {
         }
         
         dateLabel.text = format(date: Date())
+        
+        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
+        gestureRecognizer.cancelsTouchesInView = false
+        tableView.addGestureRecognizer(gestureRecognizer)
     }
     
     
@@ -100,6 +104,31 @@ class LocationDetailsViewController: UITableViewController {
     
     func format(date: Date) -> String {
         return dateFormatter.string(from: date)
+    }
+    
+    @objc func hideKeyboard(_ gestureRecognizer: UIGestureRecognizer) {
+        let point = gestureRecognizer.location(in: tableView)  // タップした座標を取得
+        let indexPath = tableView.indexPathForRow(at: point)  // タップした座標のindexPathを取得
+        if indexPath != nil && indexPath!.section == 0 && indexPath!.row == 0 {
+            return
+        }
+        
+        descriptionTextView.resignFirstResponder()  // Descriptionのセル以外を選択したときにキーボードを隠す
+    }
+    
+    // MARK:- Table View Delegates
+    override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        if indexPath.section == 0 || indexPath.section == 1 {  // 選択可能なセクションの指定
+            return indexPath
+        } else {
+            return nil
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if indexPath.section == 0 && indexPath.row == 0 {  // Descriptionを選択した際にキーボードを表示する
+            descriptionTextView.becomeFirstResponder()
+        }
     }
     
 }
