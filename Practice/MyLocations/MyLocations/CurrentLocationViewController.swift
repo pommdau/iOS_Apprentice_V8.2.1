@@ -37,6 +37,16 @@ class CurrentLocationViewController: UIViewController {
         updateLabels()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.isNavigationBarHidden = true
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.isNavigationBarHidden = false
+    }
+    
     
     // MARK:- Actions
     @IBAction func getLocation() {
@@ -66,6 +76,17 @@ class CurrentLocationViewController: UIViewController {
             updateLabels()
         }
     }
+    
+    
+    // MARK:- Navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "TagLocation" {
+            let controller = segue.destination as! LocationDetailsViewController
+            controller.coordinate = location!.coordinate  // Tag Locationボタンはlocationがあるときのみ有効になるので、unwrapは安全
+            controller.placemark = placemark
+        }
+    }
+    
     
     // MARK:- Helper Methods
     func showLocationServicesDeniedAlert() {
@@ -124,8 +145,12 @@ class CurrentLocationViewController: UIViewController {
             }
             
         } else {
-            messageLabel.text = "Tap 'Get My Location' to Start"
-            var statusMessage = ""
+            latitudeLabel.text = ""
+            longitudeLabel.text = ""
+            addressLabel.text = ""
+            tagButton.isHidden = true
+            
+            let statusMessage: String
             if let error = lastLocationError as NSError? {  // エラー情報をチェック
                 if error.domain == kCLErrorDomain && error.code == CLError.denied.rawValue {  // 位置情報サービスが許可されていない場合
                     statusMessage = "Location Services Disabled"
@@ -137,7 +162,7 @@ class CurrentLocationViewController: UIViewController {
             } else if updatingLocation {
                 statusMessage = "Searching..."
             } else {
-                messageLabel.text = "Tap 'Get My Location' to Start"
+                statusMessage = "Tap 'Get My Location' to Start"
             }
             messageLabel.text = statusMessage
         }
