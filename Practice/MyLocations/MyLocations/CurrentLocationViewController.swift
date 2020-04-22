@@ -43,8 +43,23 @@ class CurrentLocationViewController: UIViewController {
             return
         }
         
-        startLocationManager()
-        updateLabels()
+        if updatingLocation {  // Stopの場合
+            stopLocationManager()
+        } else {
+            location = nil
+            startLocationManager()  // Get My Locationの場合
+            updateLabels()
+        }
+    }
+    
+    // MARK:- Helper Methods
+    func showLocationServicesDeniedAlert() {
+        let alert = UIAlertController(title: "Location Services Disabled",
+                                      message: "Please enable location services for this app in Settings",
+                                      preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alert.addAction(okAction)
+        present(alert, animated: true, completion: nil)
     }
     
     func startLocationManager() {
@@ -88,18 +103,16 @@ class CurrentLocationViewController: UIViewController {
             }
             messageLabel.text = statusMessage
         }
+        configureGetButton()
     }
     
-    // MARK:- Helper Methods
-    func showLocationServicesDeniedAlert() {
-        let alert = UIAlertController(title: "Location Services Disabled",
-                                      message: "Please enable location services for this app in Settings",
-                                      preferredStyle: .alert)
-        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-        alert.addAction(okAction)
-        present(alert, animated: true, completion: nil)
+    func configureGetButton() {
+        if updatingLocation {
+            getButton.setTitle("Stop", for: .normal)
+        } else {
+            getButton.setTitle("Get My Locatoin", for: .normal)
+        }
     }
-    
 }
 
 
@@ -127,9 +140,28 @@ extension CurrentLocationViewController: CLLocationManagerDelegate {
         let newLocation = locations.last!
         print("didUpdateLocations \(newLocation)")
         
-        location = newLocation
-        lastLocationError = nil
-        updateLabels()
+        if newLocation.timestamp.timeIntervalSinceNow < -5 {  // 5秒よりも前の情報は無視する。すぐに次の結果は取得できるので単純にreturnでOK
+            return
+        }
+        
+        // horizontalAccuracy: 計測の正確さを表す
+        // 負の値の場合はinvalidなので無視する
+        if newLocation.horizontalAccuracy < 0 {
+            return
+        }
+        
+        if location == nil || location!.horizontalAccuracy > newLocation.horizontalAccuracy {
+            lastLocationError = nil
+            location = newLocation
+            
+            // 精度は数値が小さいほど正確。
+            // e.g. +-10m < +-100m
+            if newLocation.horizontalAccuracy <= locationManager.desiredAccuracy {
+                print("we're done!")
+                stopLocationManager()
+            }
+            updateLabels()
+        }
     }
     
 }
