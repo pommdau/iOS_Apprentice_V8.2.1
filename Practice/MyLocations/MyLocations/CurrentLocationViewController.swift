@@ -70,14 +70,15 @@ class CurrentLocationViewController: UIViewController {
         } else {
             // Location
             location = nil
+            lastLocationError = nil
             
             // Reverse Geocoding
             placemark = nil
             lastGeocodingError = nil
             
             startLocationManager()  // Get My Locationの場合
-            updateLabels()
         }
+        updateLabels()
     }
     
     
