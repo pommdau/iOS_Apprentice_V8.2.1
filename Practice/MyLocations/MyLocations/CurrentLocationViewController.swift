@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreLocation
+import CoreData
 
 class CurrentLocationViewController: UIViewController {
     
@@ -31,6 +32,8 @@ class CurrentLocationViewController: UIViewController {
     var lastGeocodingError: Error?
 
     var timer: Timer?  // 検索後60sでタイムアウトとする
+    
+    var managedObjectContext: NSManagedObjectContext!  // LocaritonDetailsViewControllerに渡す用
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -84,6 +87,7 @@ class CurrentLocationViewController: UIViewController {
             let controller = segue.destination as! LocationDetailsViewController
             controller.coordinate = location!.coordinate  // Tag Locationボタンはlocationがあるときのみ有効になるので、unwrapは安全
             controller.placemark = placemark
+            controller.managedObjectContext = managedObjectContext
         }
     }
     
