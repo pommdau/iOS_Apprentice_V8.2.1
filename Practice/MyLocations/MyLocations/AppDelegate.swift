@@ -7,11 +7,33 @@
 //
 
 import UIKit
+import CoreData
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
+    
+    // 以下のややこしい手順をNSPersistentContainerが簡単にしてくれるのだ
+/*
+    The goal here is to create an NSManagedObjectContext object. That is the object you’ll use to talk to Core Data. To get that NSManagedObjectContext object, the app needs to do several things:
+    1. Create an NSManagedObjectModel from the Core Data model you created earlier. This object represents the data model during runtime. You can ask it what sort of entities it has, what attributes these entities have, and so on. In most apps, you don’t need to use the NSManagedObjectModel object directly.
+    2. Create an NSPersistentStoreCoordinator object. This object is in charge of the SQLite database.
+    3. Finally, create the NSManagedObjectContext object and connect it to the persistent store coordinator.
+    Together, these objects are also known as the “Core Data stack.”
+ */
+    lazy var persistentContainer: NSPersistentContainer = {
+        let container = NSPersistentContainer(name: "DataModel")
 
+        container.loadPersistentStores {(storeDescription, error) in
+            if let error = error {
+                fatalError("Could not load data store: \(error)")
+            }
+        }
+        return container
+    }()
+    
+    // NSManagedObjectContextはNSPersistentContainerから取得できる
+    lazy var managedObjectContext = persistentContainer.viewContext
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
