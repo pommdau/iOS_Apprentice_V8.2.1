@@ -94,7 +94,7 @@ class LocationDetailsViewController: UITableViewController {
             //            self.navigationController?.popViewController(animated: true)
             //        })
         } catch {
-            fatalError("Errro: \(error)")
+            fatalCoreDataError(error)
         }
     }
     
