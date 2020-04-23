@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreLocation
+import CoreData
 
 // lazy loading
 // DateFormatterはコストが大きいので必要なときに作成し、その後再利用する
@@ -31,6 +32,7 @@ class LocationDetailsViewController: UITableViewController {
     var placemark: CLPlacemark?
     
     var categoryName = "No Category"
+    var managedObjectContext: NSManagedObjectContext!
     
     override func viewDidLoad() {
         super.viewDidLoad()
