@@ -34,10 +34,29 @@ class LocationDetailsViewController: UITableViewController {
     var managedObjectContext: NSManagedObjectContext!
     var date = Date()
     
+    // LocationsViewControllerからEditとしてsegueされた場合
+    var locationToEdit: Location? {  // コレが設定されていればEditモードとする
+        didSet {  // locationToEditが設定された際、同時に他のプロパティに値をセットする
+            if let location = locationToEdit {
+                descriptionText = location.locationDescription
+                categoryName = location.category
+                date = location.date
+                coordinate = CLLocationCoordinate2DMake(location.latitude, location.longitude)
+                placemark = location.placemark
+            }
+        }
+    }
+    var descriptionText = ""
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        descriptionTextView.text = ""
+        // 編集モードのときタイトルを変更する
+        if let location = locationToEdit {
+            title = "Edit Location"
+        }
+        
+        descriptionTextView.text = descriptionText
         categoryLabel.text = categoryName
         latitudeLabel.text = String(format: "%.8f", coordinate.latitude)
         longitudeLabel.text = String(format: "%.8f", coordinate.longitude)
@@ -67,12 +86,18 @@ class LocationDetailsViewController: UITableViewController {
     
     // MARK:- Actions
     @IBAction func done() {
-//        navigationController?.popViewController(animated: true)
         let hudView = HudView.hud(inView: navigationController!.view, animated: true)
-        hudView.text = "Tagged"
         
-        // NSManagedObject（Locationエンティティ）を作成する
-        let location = Location(context: managedObjectContext)
+        let location: Location
+        if let temp = locationToEdit {  // 編集モードのとき
+            hudView.text = "Updated"
+            location = temp
+        } else {  // 新規に情報を追加する場合
+            hudView.text = "Tagged"
+            // NSManagedObject（Locationエンティティ）を作成する
+            location = Location(context: managedObjectContext)
+        }
+        
         location.locationDescription = descriptionTextView.text
         location.category = categoryName
         location.latitude = coordinate.latitude
