@@ -12,25 +12,53 @@ import CoreLocation
 
 class LocationsViewController: UITableViewController {
     var managedObjectContext: NSManagedObjectContext!
-    var locations = [Location]()  // NSManagedObject型
-        
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
+    
+    //    var locations = [Location]()  // NSManagedObject型
+    lazy var fetchedResultsController: NSFetchedResultsController<Location> = {
         /*
          Get all Location objects from the data store and sort them by date.
-        */
+         */
         // fetching: data storeからデータを取得すること
         // fetchRequest: fetchするためのオブジェクト。
-        let fetchRequest = NSFetchRequest<Location>()  // データから引き出すオブジェクトを設定する
-        let entity = Location.entity()
-        fetchRequest.entity = entity  // 引き出したいLocationのentityを設定
+        let fetchRequest = NSFetchRequest<Location>()  // DataStoreから引き出すオブジェクトを設定する
         
+        // 引き出したいLocationのentityを設定
+        let entity = Location.entity()
+        fetchRequest.entity = entity
+        
+        // 引き出すデータをソート
         let sortDescriptor = NSSortDescriptor(key: "date", ascending: true)
         fetchRequest.sortDescriptors = [sortDescriptor]
         
+        fetchRequest.fetchBatchSize = 20  // 一度に読み込むオブジェクトの数を設定する（多すぎるとメモリの無駄になる）
+        
+        // cacheName: キャッシュしておくことで、次回起動時にNSFetchedResultsControllerがデータを検索する必要がなくなる
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                                                  managedObjectContext: self.managedObjectContext,
+                                                                  sectionNameKeyPath: nil,
+                                                                  cacheName: "Locations")
+        fetchedResultsController.delegate = self
+        return fetchedResultsController
+    }()
+    
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        performFetch()
+    }
+    
+    // NSFetchedResultsControllerが必要なくなったときにnilにしておく
+    // 無駄な通知を受け取らないようにするため
+    // 実質的には必要ないが、defensive programmingである。書く習慣をつけておくと良い。
+    deinit {
+        fetchedResultsController.delegate = nil
+    }
+    
+    // MARK:- Helper Methods
+    func performFetch() {
         do {
-            locations = try managedObjectContext.fetch(fetchRequest)
+            try fetchedResultsController.performFetch()
         } catch {
             fatalCoreDataError(error)
         }
@@ -43,7 +71,7 @@ class LocationsViewController: UITableViewController {
             controller.managedObjectContext = managedObjectContext
             
             if let indexPath = tableView.indexPath(for: sender as! UITableViewCell) {
-                let location = locations[indexPath.row]
+                let location = fetchedResultsController.object(at: indexPath)
                 controller.locationToEdit = location
             }
         }
@@ -52,15 +80,86 @@ class LocationsViewController: UITableViewController {
     
     // MARK: - Table View Delegates
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return locations.count
+        // NSFetchedResultsControllerはsectionsプロパティを持つ
+        let sectionInfo = fetchedResultsController.sections![section]
+        return sectionInfo.numberOfObjects
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "LocationCell", for: indexPath) as! LocationCell
-
-        let location = locations[indexPath.row]
+        
+        let location = fetchedResultsController.object(at: indexPath)
         cell.configure(for: location)
         
         return cell
+    }
+}
+
+
+// MARK:- NSFetchedResultsController Delegate Extension
+// いろいろ長く書いてあるけど、コピペして流用するから大体でOKよ！
+extension LocationsViewController: NSFetchedResultsControllerDelegate {
+    
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        print("*** controllerWillChangeContent")
+        tableView.beginUpdates()
+    }
+    
+    // オブジェクトに変更があった際に呼ばれる
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
+                    didChange anObject: Any,
+                    at indexPath: IndexPath?,
+                    for type: NSFetchedResultsChangeType,
+                    newIndexPath: IndexPath?) {
+        
+        switch type {
+        case .insert:
+            print("*** NSFetchedResultsChangeInsert (object)")
+            tableView.insertRows(at: [newIndexPath!], with: .fade)
+            
+        case .delete:
+            print("*** NSFetchedResultsChangeDelete (object)")
+            tableView.deleteRows(at: [indexPath!], with: .fade)
+            
+        case .update:
+            print("*** NSFetchedResultsChangeUpdate (object)")
+            if let cell = tableView.cellForRow(at: indexPath!)as? LocationCell {
+                let location = controller.object(at: indexPath!) as! Location
+                cell.configure(for: location)
+            }
+            
+        case .move:
+            print("*** NSFetchedResultsChangeMove (object)")
+            tableView.deleteRows(at: [indexPath!], with: .fade)
+            tableView.insertRows(at: [newIndexPath!], with: .fade)
+            
+        @unknown default:
+            fatalError("Unhandled switch case of NSFetchedResultsChangeType")
+        }
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
+                    didChange sectionInfo: NSFetchedResultsSectionInfo,
+                    atSectionIndex sectionIndex: Int,
+                    for type: NSFetchedResultsChangeType) {
+        switch type {
+        case .insert:
+            print("*** NSFetchedResultsChangeInsert (section)")
+            tableView.insertSections(IndexSet(integer: sectionIndex), with: .fade)
+        case .delete:
+            print("*** NSFetchedResultsChangeDelete (section)")
+            tableView.deleteSections(IndexSet(integer: sectionIndex), with: .fade)
+        case .update:
+            print("*** NSFetchedResultsChangeUpdate (section)")
+        case .move:
+            print("*** NSFetchedResultsChangeMove (section)")
+        @unknown default:
+            fatalError("Unhandled switch case of NSFetchedResultsChangeType")
+        }
+    }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        print("*** controllerDidChangeContent")
+        tableView.endUpdates()
     }
 }
