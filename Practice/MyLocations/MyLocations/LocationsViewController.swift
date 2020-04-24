@@ -45,6 +45,7 @@ class LocationsViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        navigationItem.rightBarButtonItem = editButtonItem  // 右上にbuilt-in Edit buttonを表示する設定
         performFetch()
     }
     
@@ -93,10 +94,28 @@ class LocationsViewController: UITableViewController {
         
         return cell
     }
+    
+    // As soon as you implement this method in your view controller,
+    // it enables swipe-to-delete.
+    override func tableView(_ tableView: UITableView,
+                            commit editingStyle: UITableViewCell.EditingStyle,
+                            forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {  // 削除する場合
+            let location = fetchedResultsController.object(at: indexPath)
+            
+            managedObjectContext.delete(location)
+            do {
+                try managedObjectContext.save()
+            } catch {
+                fatalCoreDataError(error)
+            }
+        }
+    }
 }
 
 
 // MARK:- NSFetchedResultsController Delegate Extension
+// CoreDataの情報に変更があった際に、テーブルを更新するための処理を書いている
 // いろいろ長く書いてあるけど、コピペして流用するから大体でOKよ！
 extension LocationsViewController: NSFetchedResultsControllerDelegate {
     
