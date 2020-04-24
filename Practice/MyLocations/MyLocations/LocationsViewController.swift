@@ -27,15 +27,17 @@ class LocationsViewController: UITableViewController {
         fetchRequest.entity = entity
         
         // 引き出すデータをソート
-        let sortDescriptor = NSSortDescriptor(key: "date", ascending: true)
-        fetchRequest.sortDescriptors = [sortDescriptor]
+        let sort1 = NSSortDescriptor(key: "category", ascending: true)
+        let sort2 = NSSortDescriptor(key: "date", ascending: true)
+        fetchRequest.sortDescriptors = [sort1, sort2]
         
         fetchRequest.fetchBatchSize = 20  // 一度に読み込むオブジェクトの数を設定する（多すぎるとメモリの無駄になる）
         
+        // sectionNameKeyPath: categoryでグループ分けされるように設定
         // cacheName: キャッシュしておくことで、次回起動時にNSFetchedResultsControllerがデータを検索する必要がなくなる
         let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
                                                                   managedObjectContext: self.managedObjectContext,
-                                                                  sectionNameKeyPath: nil,
+                                                                  sectionNameKeyPath: "category",
                                                                   cacheName: "Locations")
         fetchedResultsController.delegate = self
         return fetchedResultsController
@@ -80,6 +82,18 @@ class LocationsViewController: UITableViewController {
     
     
     // MARK: - Table View Delegates
+    // セクションの数
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return fetchedResultsController.sections!.count
+    }
+    
+    // セクションのタイトル
+    override func tableView(_ tableView: UITableView,
+                            titleForHeaderInSection section: Int) -> String? {
+        let sectionInfo = fetchedResultsController.sections![section]
+        return sectionInfo.name
+    }
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // NSFetchedResultsControllerはsectionsプロパティを持つ
         let sectionInfo = fetchedResultsController.sections![section]
