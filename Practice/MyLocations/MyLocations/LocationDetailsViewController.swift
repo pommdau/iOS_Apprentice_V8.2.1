@@ -86,12 +86,18 @@ class LocationDetailsViewController: UITableViewController {
     
     // MARK:- Actions
     @IBAction func done() {
-//        navigationController?.popViewController(animated: true)
         let hudView = HudView.hud(inView: navigationController!.view, animated: true)
-        hudView.text = "Tagged"
         
-        // NSManagedObject（Locationエンティティ）を作成する
-        let location = Location(context: managedObjectContext)
+        let location: Location
+        if let temp = locationToEdit {  // 編集モードのとき
+            hudView.text = "Updated"
+            location = temp
+        } else {  // 新規に情報を追加する場合
+            hudView.text = "Tagged"
+            // NSManagedObject（Locationエンティティ）を作成する
+            location = Location(context: managedObjectContext)
+        }
+        
         location.locationDescription = descriptionTextView.text
         location.category = categoryName
         location.latitude = coordinate.latitude

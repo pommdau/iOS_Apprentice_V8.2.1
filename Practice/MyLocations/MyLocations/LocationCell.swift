@@ -28,7 +28,7 @@ class LocationCell: UITableViewCell {
     // MARK:- Helper Method
     func configure(for location: Location) {
         if location.locationDescription.isEmpty {
-             descriptionLabel.text = "(No Dwscription)"
+             descriptionLabel.text = "(No Description)"
         } else {
              descriptionLabel.text = location.locationDescription
         }
