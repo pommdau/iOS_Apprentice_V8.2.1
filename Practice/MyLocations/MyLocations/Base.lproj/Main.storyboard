@@ -325,10 +325,20 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="PgV-Nd-88L">
+                                                    <rect key="frame" x="97" y="11" width="243" height="22"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="22" id="MuE-mg-KQv"/>
+                                                    </constraints>
+                                                </imageView>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="Jfz-fy-s2H" firstAttribute="centerY" secondItem="kBE-Vo-Qt7" secondAttribute="centerY" id="5Oh-We-IyS"/>
+                                                <constraint firstItem="PgV-Nd-88L" firstAttribute="top" secondItem="kBE-Vo-Qt7" secondAttribute="topMargin" id="9vr-8f-rXd"/>
                                                 <constraint firstItem="Jfz-fy-s2H" firstAttribute="leading" secondItem="kBE-Vo-Qt7" secondAttribute="leadingMargin" id="EZw-ID-iHp"/>
+                                                <constraint firstItem="PgV-Nd-88L" firstAttribute="trailing" secondItem="kBE-Vo-Qt7" secondAttribute="trailingMargin" id="I3s-OM-8aS"/>
+                                                <constraint firstItem="PgV-Nd-88L" firstAttribute="leading" secondItem="Jfz-fy-s2H" secondAttribute="trailing" id="lOk-bI-5Yu"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="PgV-Nd-88L" secondAttribute="bottom" id="p2U-dX-r8E"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -458,17 +468,20 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="addPhotoLabel" destination="Jfz-fy-s2H" id="9EJ-ic-w4N"/>
                         <outlet property="addressLabel" destination="2Aq-Hi-gnY" id="ZXE-h7-JGr"/>
                         <outlet property="categoryLabel" destination="AKS-01-dEg" id="cI7-oV-Chx"/>
                         <outlet property="dateLabel" destination="PnF-y4-1PY" id="GMk-Ha-fDq"/>
                         <outlet property="descriptionTextView" destination="7wj-DF-zZB" id="WIB-d4-Bta"/>
+                        <outlet property="imageHeight" destination="MuE-mg-KQv" id="n5h-MU-jqp"/>
+                        <outlet property="imageView" destination="PgV-Nd-88L" id="1Ku-pN-3FM"/>
                         <outlet property="latitudeLabel" destination="IVB-HG-F7U" id="hiR-eg-6bu"/>
                         <outlet property="longitudeLabel" destination="8Dw-FK-fu0" id="isM-ho-OsF"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LZ2-nY-OXT" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2434" y="-322"/>
+            <point key="canvasLocation" x="2432.8000000000002" y="-322.48875562218893"/>
         </scene>
         <!--Category Picker View Controller-->
         <scene sceneID="DXd-Sr-hU6">

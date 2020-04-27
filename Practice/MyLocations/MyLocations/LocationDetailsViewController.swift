@@ -23,6 +23,11 @@ private let dateFormatter: DateFormatter = {
 class LocationDetailsViewController: UITableViewController {
     @IBOutlet weak var descriptionTextView: UITextView!
     @IBOutlet weak var categoryLabel: UILabel!
+    @IBOutlet weak var imageView: UIImageView!
+    // TODO: widthは決まっているので、Heightを計算で動的にしても良い。
+    // You get the aspect ratio by doing image.size.width / image.size.height.
+    @IBOutlet weak var imageHeight: NSLayoutConstraint!
+    @IBOutlet weak var addPhotoLabel: UILabel!
     @IBOutlet weak var latitudeLabel: UILabel!
     @IBOutlet weak var longitudeLabel: UILabel!
     @IBOutlet weak var addressLabel: UILabel!
@@ -30,6 +35,7 @@ class LocationDetailsViewController: UITableViewController {
     
     var coordinate = CLLocationCoordinate2D(latitude: 0, longitude: 0)
     var placemark: CLPlacemark?
+    var image: UIImage?
     var categoryName = "No Category"
     var managedObjectContext: NSManagedObjectContext!
     var date = Date()
@@ -72,6 +78,8 @@ class LocationDetailsViewController: UITableViewController {
         let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
         gestureRecognizer.cancelsTouchesInView = false
         tableView.addGestureRecognizer(gestureRecognizer)
+        
+        listenForBackgroundNotification()
     }
     
     
@@ -171,6 +179,28 @@ class LocationDetailsViewController: UITableViewController {
         descriptionTextView.resignFirstResponder()  // Descriptionのセル以外を選択したときにキーボードを隠す
     }
     
+    // 変数のimageにdidSetを使えば自動で画像をアップデートできる（課題）
+    func show(image: UIImage) {
+        imageView.image = image
+        imageView.isHidden = false
+        addPhotoLabel.text = ""
+        imageHeight.constant = 260
+        tableView.reloadData()
+    }
+    
+    // アラートのシート画面は、ホーム画面に戻った際に隠す必要がある（何に関するシートか分からなくなってしまうため）
+    func listenForBackgroundNotification() {
+        NotificationCenter.default.addObserver(
+            forName: UIApplication.didEnterBackgroundNotification,
+            object: nil,
+            queue: OperationQueue.main) { _ in
+                if self.presentedViewController != nil {  // モーダル画面、例えばimage pickerやaction sheetがあれば隠す
+                    self.dismiss(animated: false, completion: nil)
+                }
+                self.descriptionTextView.resignFirstResponder()  // text viewがアクティブでキーボードが表示されていれば隠す
+        }
+    }
+    
     // MARK:- Table View Delegates
     override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         if indexPath.section == 0 || indexPath.section == 1 {  // 選択可能なセクションの指定
@@ -249,6 +279,12 @@ extension LocationDetailsViewController: UIImagePickerControllerDelegate, UINavi
     // MARK:- Image Picker Delegates
     func imagePickerController(_ picker: UIImagePickerController,
                                didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        // infoからUIImageの情報を取得する
+        image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage
+        if let theImage = image {
+            show(image: theImage)
+        }
+        
         dismiss(animated: true, completion: nil)
     }
     
