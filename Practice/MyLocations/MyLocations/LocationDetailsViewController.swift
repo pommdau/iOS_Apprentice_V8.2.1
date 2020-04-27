@@ -54,6 +54,8 @@ class LocationDetailsViewController: UITableViewController {
     }
     var descriptionText = ""
     
+    var observer: Any!  // 監視を解除するためのプロパティ
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -82,6 +84,12 @@ class LocationDetailsViewController: UITableViewController {
         listenForBackgroundNotification()
     }
     
+    deinit {
+        // Do note that as of iOS 9.0 and above, even if you do not remove the observer explicitly,
+        // the system would handle this for you and automatically remove the observer when the view controller is deallocated.
+        print("*** deinit \(self)")
+        NotificationCenter.default.removeObserver(observer!)
+    }
     
     // MARK:- Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -190,14 +198,18 @@ class LocationDetailsViewController: UITableViewController {
     
     // アラートのシート画面は、ホーム画面に戻った際に隠す必要がある（何に関するシートか分からなくなってしまうため）
     func listenForBackgroundNotification() {
-        NotificationCenter.default.addObserver(
+        observer = NotificationCenter.default.addObserver(
             forName: UIApplication.didEnterBackgroundNotification,
             object: nil,
-            queue: OperationQueue.main) { _ in
-                if self.presentedViewController != nil {  // モーダル画面、例えばimage pickerやaction sheetがあれば隠す
-                    self.dismiss(animated: false, completion: nil)
+            queue: OperationQueue.main) { [weak self] _ in
+                // ownership cycleを防ぐためにweakでselfをcaptureする
+                // そのためselfがnilになる可能性があるので、unwrap処理が必要
+                if let weakSelf = self {
+                    if weakSelf.presentedViewController != nil {  // モーダル画面、例えばimage pickerやaction sheetがあれば隠す
+                        weakSelf.dismiss(animated: false, completion: nil)
+                    }
+                    weakSelf.descriptionTextView.resignFirstResponder()  // text viewがアクティブでキーボードが表示されていれば隠す
                 }
-                self.descriptionTextView.resignFirstResponder()  // text viewがアクティブでキーボードが表示されていれば隠す
         }
     }
     
