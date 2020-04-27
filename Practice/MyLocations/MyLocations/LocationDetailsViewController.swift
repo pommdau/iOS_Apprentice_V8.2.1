@@ -184,7 +184,8 @@ class LocationDetailsViewController: UITableViewController {
         if indexPath.section == 0 && indexPath.row == 0 {  // Descriptionを選択した際にキーボードを表示する
             descriptionTextView.becomeFirstResponder()
         } else if indexPath.section == 1 && indexPath.row == 0 {  // Add Photoが選択された場合
-            takePhotoWithCamera()
+            tableView.deselectRow(at: indexPath, animated: true)  // 選択状態（背景がgray）を解除する
+            pickPhoto()
         }
     }
 }
@@ -198,6 +199,51 @@ extension LocationDetailsViewController: UIImagePickerControllerDelegate, UINavi
         imagePicker.delegate = self
         imagePicker.allowsEditing = true
         present(imagePicker, animated: true, completion: nil)
+    }
+    
+    func choosePhotoFromLibrary() {
+        let imagePicker = UIImagePickerController()
+        imagePicker.sourceType = .photoLibrary  // 写真フォルダから画像を選択
+        imagePicker.delegate = self
+        imagePicker.allowsEditing = true  // 編集を可能とする
+        present(imagePicker, animated: true, completion: nil)
+    }
+    
+    // 画像を取得する
+    func pickPhoto() {
+        if UIImagePickerController.isSourceTypeAvailable(.camera) {  // カメラがデバイスに存在するかどうか
+            showPhotoMenu()
+        } else {
+            choosePhotoFromLibrary()
+        }
+    }
+
+    // 画像の取得方法をユーザに選択させる
+    func showPhotoMenu() {
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        
+        let actCancel = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        alert.addAction(actCancel)
+        
+        let actPhoto = UIAlertAction(title: "Take Photo", style: .default, handler: { _ in
+            self.takePhotoWithCamera()
+        })
+        alert.addAction(actPhoto)
+        
+        let actLibrary = UIAlertAction(title: "Choose From Library", style: .default, handler: { _ in
+            self.choosePhotoFromLibrary()
+        })
+        alert.addAction(actLibrary)
+        
+        // iPad用に下記の設定が必要。またこの処理はiPhoneには影響しない。
+        // https://re-engines.com/2017/11/01/swiftipad%E3%81%AEactionsheet%E8%A1%A8%E7%A4%BA%E3%81%A7%E3%82%AF%E3%83%A9%E3%83%83%E3%82%B7%E3%83%A5%E3%81%99%E3%82%8B%E5%95%8F%E9%A1%8C/
+        alert.popoverPresentationController?.sourceView = self.view
+        alert.popoverPresentationController?.sourceRect = CGRect(x: view.frame.size.width/2,
+                                                                 y: view.frame.size.height,
+                                                                 width: 0,
+                                                                 height: 0)
+
+        present(alert, animated: true, completion: nil)
     }
     
     // MARK:- Image Picker Delegates
