@@ -20,6 +20,7 @@ class MapViewController: UIViewController {
         super.viewDidLoad()
         updateLocations()
         
+        // 最初に表示するときにLocationが保存されていればその情報を表示する
         if !locations.isEmpty {
             showLocations()
         }
@@ -41,6 +42,10 @@ class MapViewController: UIViewController {
         mapView.setRegion(theRegion, animated: true)
     }
     
+    // pinの(i)ボタン押下時のアクション
+    @objc func showLocationDetails(_ sender: UIButton) {
+        
+    }
     
     // MARK:- Heloper methods
     // CoreDataに変更があった際に、データを再読み込みしてMapを更新する
@@ -73,8 +78,8 @@ class MapViewController: UIViewController {
             region = MKCoordinateRegion(center: annotation.coordinate,
                                         latitudinalMeters: 1000,
                                         longitudinalMeters: 1000)
-        
-        // Annotaionsが複数ある場合
+            
+            // Annotaionsが複数ある場合
         // 範囲を計算して
         default:
             var topLeft     = CLLocationCoordinate2D(latitude: -90, longitude: 180)   // 最も左上から遠い右下の点が初期設定
@@ -107,5 +112,42 @@ class MapViewController: UIViewController {
 
 
 extension MapViewController: MKMapViewDelegate {
-    
+    // カスタムのピンを作成する
+    // TableView_DataSourceのcellForRowAt的なやつ。
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        guard annotation is Location else {  // 型チェックの書き方
+            // Location以外の例として、ユーザ位置を示す青い点がある
+            // nilを返した場合はデフォルトのものが表示される
+            return nil
+        }
+        let identifier = "Location"
+        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+        if annotationView == nil {  // 再利用できない場合は新規に作成
+            // 緑のピンを作成する
+            let pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+            pinView.isEnabled      = true
+            pinView.canShowCallout = true
+            pinView.animatesDrop   = false
+            pinView.pinTintColor   = UIColor(red: 0.32, green: 0.82, blue: 0.4, alpha: 1)
+            
+            // Detail disclosureボタン(i)を作成して、pinのaccessoryViewに追加する
+            let rightButton = UIButton(type: .detailDisclosure)
+            rightButton.addTarget(self, action: #selector(showLocationDetails(_:)), for: .touchUpInside)
+            pinView.rightCalloutAccessoryView = rightButton
+            
+            annotationView = pinView
+        }
+        
+        if let annotationView = annotationView {
+            annotationView.annotation = annotation
+            
+            // ピンの(i)ボタンにタグをつけておく。ボタン押下時後の処理のため。
+            let button = annotationView.rightCalloutAccessoryView as! UIButton
+            if let index = locations.firstIndex(of: annotation as! Location) {
+                button.tag = index
+            }
+        }
+        
+        return annotationView
+    }
 }
