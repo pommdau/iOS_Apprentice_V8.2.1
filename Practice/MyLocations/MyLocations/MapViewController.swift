@@ -13,7 +13,29 @@ import CoreData
 class MapViewController: UIViewController {
     @IBOutlet weak var mapView: MKMapView!
     
-    var managedObjectContext: NSManagedObjectContext!
+    // AppDelegateでmanagedObjectContextに値がセットされた際、
+    // ObserverにNSManagedObjectContextObjectsDidChangeを設定する
+    // DataStoreに変更があった際にmanagedObjectContextによって呼ばれる
+    var managedObjectContext: NSManagedObjectContext! {
+        didSet {
+            NotificationCenter.default.addObserver(
+                forName: Notification.Name.NSManagedObjectContextObjectsDidChange,
+                object: managedObjectContext,
+                queue: OperationQueue.main) { notification in
+                    if self.isViewLoaded {  // このタブが開かれていない（Viewがロードされていない）ときに表示するとcrashするのでチェック
+
+//                        // notification.userInfoを使ってinserting/deletingのときのみ更新を行うようにするとより効率的になる（課題）
+//                        if let dictionary = notification.userInfo {
+//                            print(dictionary[NSInsertedObjectsKey])
+//                            print(dictionary[NSUpdatedObjectsKey])
+//                            print(dictionary[NSDeletedObjectsKey])
+//                        }
+                        
+                        self.updateLocations()
+                    }
+            }
+        }
+    }
     var locations = [Location]()  // NSFetchedResultsControllerを使えば簡単だが、あえて手動で実装してみる
     
     override func viewDidLoad() {
