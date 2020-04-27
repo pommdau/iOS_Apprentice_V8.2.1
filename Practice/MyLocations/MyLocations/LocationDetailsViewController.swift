@@ -62,6 +62,13 @@ class LocationDetailsViewController: UITableViewController {
         // 編集モードのときタイトルを変更する
         if let location = locationToEdit {
             title = "Edit Location"
+            
+            if location.hasPhoto {
+                if let theImage = location.photoImage {
+                    // 画像をセルに表示する
+                    show(image: theImage)
+                }
+            }
         }
         
         descriptionTextView.text = descriptionText
@@ -112,6 +119,7 @@ class LocationDetailsViewController: UITableViewController {
             hudView.text = "Tagged"
             // NSManagedObject（Locationエンティティ）を作成する
             location = Location(context: managedObjectContext)
+            location.photoID = nil  // デフォルトだと0になるのでnilにする必要がある
         }
         
         location.locationDescription = descriptionTextView.text
@@ -120,6 +128,22 @@ class LocationDetailsViewController: UITableViewController {
         location.longitude = coordinate.longitude
         location.date = date
         location.placemark = placemark
+        
+        // Save image
+        if let image = image {
+            if !location.hasPhoto {
+                // まだIDを持たない場合は新規にIDを割り振る
+                // 既にIDが振ってある場合は、同名なので画像を上書きすることになる。
+                location.photoID = Location.nextPhotoID() as NSNumber
+            }
+            if let data = image.jpegData(compressionQuality: 0.5) {
+                do {
+                    try data.write(to: location.photoURL, options: .atomic)
+                } catch {
+                    print("Error writing file: \(error)")
+                }
+            }
+        }
         
         do {
             try managedObjectContext.save()
