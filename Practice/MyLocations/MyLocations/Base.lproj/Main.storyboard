@@ -135,12 +135,12 @@
                         <viewLayoutGuide key="safeArea" id="uad-0L-uC8"/>
                     </view>
                     <navigationItem key="navigationItem" title="Map" id="1V0-R5-9mp">
-                        <barButtonItem key="leftBarButtonItem" title="Locations" id="rQv-3t-Xs4">
+                        <barButtonItem key="leftBarButtonItem" image="Pin" id="rQv-3t-Xs4">
                             <connections>
                                 <action selector="showLocations" destination="fxo-oJ-2Rm" id="8mg-A8-xu1"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="User" id="RTT-cF-NcY">
+                        <barButtonItem key="rightBarButtonItem" image="User" id="RTT-cF-NcY">
                             <connections>
                                 <action selector="showUser" destination="fxo-oJ-2Rm" id="cqc-pF-1JR"/>
                             </connections>
@@ -579,12 +579,14 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="gNE-WZ-e6u"/>
+        <segue reference="nwf-8y-QAF"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="1" green="0.93333333333333335" blue="0.53333333333333333" alpha="1" colorSpace="calibratedRGB"/>
     <resources>
         <image name="Locations" width="30" height="30"/>
         <image name="Map" width="30" height="30"/>
+        <image name="Pin" width="24" height="24"/>
         <image name="Tag" width="30" height="30"/>
+        <image name="User" width="24" height="24"/>
     </resources>
 </document>
