@@ -23,6 +23,11 @@ private let dateFormatter: DateFormatter = {
 class LocationDetailsViewController: UITableViewController {
     @IBOutlet weak var descriptionTextView: UITextView!
     @IBOutlet weak var categoryLabel: UILabel!
+    @IBOutlet weak var imageView: UIImageView!
+    // TODO: widthは決まっているので、Heightを計算で動的にしても良い。
+    // You get the aspect ratio by doing image.size.width / image.size.height.
+    @IBOutlet weak var imageHeight: NSLayoutConstraint!
+    @IBOutlet weak var addPhotoLabel: UILabel!
     @IBOutlet weak var latitudeLabel: UILabel!
     @IBOutlet weak var longitudeLabel: UILabel!
     @IBOutlet weak var addressLabel: UILabel!
@@ -30,6 +35,7 @@ class LocationDetailsViewController: UITableViewController {
     
     var coordinate = CLLocationCoordinate2D(latitude: 0, longitude: 0)
     var placemark: CLPlacemark?
+    var image: UIImage?
     var categoryName = "No Category"
     var managedObjectContext: NSManagedObjectContext!
     var date = Date()
@@ -48,12 +54,21 @@ class LocationDetailsViewController: UITableViewController {
     }
     var descriptionText = ""
     
+    var observer: Any!  // 監視を解除するためのプロパティ
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // 編集モードのときタイトルを変更する
         if let location = locationToEdit {
             title = "Edit Location"
+            
+            if location.hasPhoto {
+                if let theImage = location.photoImage {
+                    // 画像をセルに表示する
+                    show(image: theImage)
+                }
+            }
         }
         
         descriptionTextView.text = descriptionText
@@ -72,8 +87,16 @@ class LocationDetailsViewController: UITableViewController {
         let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
         gestureRecognizer.cancelsTouchesInView = false
         tableView.addGestureRecognizer(gestureRecognizer)
+        
+        listenForBackgroundNotification()
     }
     
+    deinit {
+        // Do note that as of iOS 9.0 and above, even if you do not remove the observer explicitly,
+        // the system would handle this for you and automatically remove the observer when the view controller is deallocated.
+        print("*** deinit \(self)")
+        NotificationCenter.default.removeObserver(observer!)
+    }
     
     // MARK:- Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -96,6 +119,7 @@ class LocationDetailsViewController: UITableViewController {
             hudView.text = "Tagged"
             // NSManagedObject（Locationエンティティ）を作成する
             location = Location(context: managedObjectContext)
+            location.photoID = nil  // デフォルトだと0になるのでnilにする必要がある
         }
         
         location.locationDescription = descriptionTextView.text
@@ -104,6 +128,22 @@ class LocationDetailsViewController: UITableViewController {
         location.longitude = coordinate.longitude
         location.date = date
         location.placemark = placemark
+        
+        // Save image
+        if let image = image {
+            if !location.hasPhoto {
+                // まだIDを持たない場合は新規にIDを割り振る
+                // 既にIDが振ってある場合は、同名なので画像を上書きすることになる。
+                location.photoID = Location.nextPhotoID() as NSNumber
+            }
+            if let data = image.jpegData(compressionQuality: 0.5) {
+                do {
+                    try data.write(to: location.photoURL, options: .atomic)
+                } catch {
+                    print("Error writing file: \(error)")
+                }
+            }
+        }
         
         do {
             try managedObjectContext.save()
@@ -171,6 +211,32 @@ class LocationDetailsViewController: UITableViewController {
         descriptionTextView.resignFirstResponder()  // Descriptionのセル以外を選択したときにキーボードを隠す
     }
     
+    // 変数のimageにdidSetを使えば自動で画像をアップデートできる（課題）
+    func show(image: UIImage) {
+        imageView.image = image
+        imageView.isHidden = false
+        addPhotoLabel.text = ""
+        imageHeight.constant = 260
+        tableView.reloadData()
+    }
+    
+    // アラートのシート画面は、ホーム画面に戻った際に隠す必要がある（何に関するシートか分からなくなってしまうため）
+    func listenForBackgroundNotification() {
+        observer = NotificationCenter.default.addObserver(
+            forName: UIApplication.didEnterBackgroundNotification,
+            object: nil,
+            queue: OperationQueue.main) { [weak self] _ in
+                // ownership cycleを防ぐためにweakでselfをcaptureする
+                // そのためselfがnilになる可能性があるので、unwrap処理が必要
+                if let weakSelf = self {
+                    if weakSelf.presentedViewController != nil {  // モーダル画面、例えばimage pickerやaction sheetがあれば隠す
+                        weakSelf.dismiss(animated: false, completion: nil)
+                    }
+                    weakSelf.descriptionTextView.resignFirstResponder()  // text viewがアクティブでキーボードが表示されていれば隠す
+                }
+        }
+    }
+    
     // MARK:- Table View Delegates
     override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         if indexPath.section == 0 || indexPath.section == 1 {  // 選択可能なセクションの指定
@@ -183,9 +249,83 @@ class LocationDetailsViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 0 && indexPath.row == 0 {  // Descriptionを選択した際にキーボードを表示する
             descriptionTextView.becomeFirstResponder()
+        } else if indexPath.section == 1 && indexPath.row == 0 {  // Add Photoが選択された場合
+            tableView.deselectRow(at: indexPath, animated: true)  // 選択状態（背景がgray）を解除する
+            pickPhoto()
         }
+    }
+}
+
+extension LocationDetailsViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+
+    // MARK:- Image Helper Methods
+    func takePhotoWithCamera() {
+        let imagePicker = UIImagePickerController()
+        imagePicker.sourceType = .camera
+        imagePicker.delegate = self
+        imagePicker.allowsEditing = true
+        present(imagePicker, animated: true, completion: nil)
+    }
+    
+    func choosePhotoFromLibrary() {
+        let imagePicker = UIImagePickerController()
+        imagePicker.sourceType = .photoLibrary  // 写真フォルダから画像を選択
+        imagePicker.delegate = self
+        imagePicker.allowsEditing = true  // 編集を可能とする
+        present(imagePicker, animated: true, completion: nil)
+    }
+    
+    // 画像を取得する
+    func pickPhoto() {
+        if UIImagePickerController.isSourceTypeAvailable(.camera) {  // カメラがデバイスに存在するかどうか
+            showPhotoMenu()
+        } else {
+            choosePhotoFromLibrary()
+        }
+    }
+
+    // 画像の取得方法をユーザに選択させる
+    func showPhotoMenu() {
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        
+        let actCancel = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        alert.addAction(actCancel)
+        
+        let actPhoto = UIAlertAction(title: "Take Photo", style: .default, handler: { _ in
+            self.takePhotoWithCamera()
+        })
+        alert.addAction(actPhoto)
+        
+        let actLibrary = UIAlertAction(title: "Choose From Library", style: .default, handler: { _ in
+            self.choosePhotoFromLibrary()
+        })
+        alert.addAction(actLibrary)
+        
+        // iPad用に下記の設定が必要。またこの処理はiPhoneには影響しない。
+        // https://re-engines.com/2017/11/01/swiftipad%E3%81%AEactionsheet%E8%A1%A8%E7%A4%BA%E3%81%A7%E3%82%AF%E3%83%A9%E3%83%83%E3%82%B7%E3%83%A5%E3%81%99%E3%82%8B%E5%95%8F%E9%A1%8C/
+        alert.popoverPresentationController?.sourceView = self.view
+        alert.popoverPresentationController?.sourceRect = CGRect(x: view.frame.size.width/2,
+                                                                 y: view.frame.size.height,
+                                                                 width: 0,
+                                                                 height: 0)
+
+        present(alert, animated: true, completion: nil)
+    }
+    
+    // MARK:- Image Picker Delegates
+    func imagePickerController(_ picker: UIImagePickerController,
+                               didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        // infoからUIImageの情報を取得する
+        image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage
+        if let theImage = image {
+            show(image: theImage)
+        }
+        
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true, completion: nil)
     }
     
 }
-
-

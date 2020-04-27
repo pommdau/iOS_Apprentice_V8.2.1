@@ -116,7 +116,7 @@ class LocationsViewController: UITableViewController {
                             forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {  // 削除する場合
             let location = fetchedResultsController.object(at: indexPath)
-            
+            location.removePhotoFile()
             managedObjectContext.delete(location)
             do {
                 try managedObjectContext.save()
