@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		D0116AE02456BAD70056C881 /* UIImage+Resize.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0116ADF2456BAD70056C881 /* UIImage+Resize.swift */; };
 		D0116AE22456C9F60056C881 /* String+AddText.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0116AE12456C9F60056C881 /* String+AddText.swift */; };
+		D0116AE42457136E0056C881 /* MyTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0116AE32457136E0056C881 /* MyTabBarController.swift */; };
+		D0116AE6245716850056C881 /* MyImagePickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0116AE5245716850056C881 /* MyImagePickerController.swift */; };
 		D06542B8245035B50065C822 /* LocationDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D06542B7245035B50065C822 /* LocationDetailsViewController.swift */; };
 		D09BE96924518374008A3C9B /* LocationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D09BE96824518374008A3C9B /* LocationsViewController.swift */; };
 		D09BE96B24526A5E008A3C9B /* LocationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D09BE96A24526A5E008A3C9B /* LocationCell.swift */; };
@@ -31,6 +33,8 @@
 /* Begin PBXFileReference section */
 		D0116ADF2456BAD70056C881 /* UIImage+Resize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Resize.swift"; sourceTree = "<group>"; };
 		D0116AE12456C9F60056C881 /* String+AddText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+AddText.swift"; sourceTree = "<group>"; };
+		D0116AE32457136E0056C881 /* MyTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyTabBarController.swift; sourceTree = "<group>"; };
+		D0116AE5245716850056C881 /* MyImagePickerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyImagePickerController.swift; sourceTree = "<group>"; };
 		D06542B7245035B50065C822 /* LocationDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationDetailsViewController.swift; sourceTree = "<group>"; };
 		D09BE96824518374008A3C9B /* LocationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationsViewController.swift; sourceTree = "<group>"; };
 		D09BE96A24526A5E008A3C9B /* LocationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationCell.swift; sourceTree = "<group>"; };
@@ -94,8 +98,10 @@
 			children = (
 				D0FE3D8F244FE6C200802A45 /* AppDelegate.swift */,
 				D0FE3D91244FE6C200802A45 /* SceneDelegate.swift */,
+				D0116AE32457136E0056C881 /* MyTabBarController.swift */,
 				D0FE3D93244FE6C200802A45 /* CurrentLocationViewController.swift */,
 				D06542B7245035B50065C822 /* LocationDetailsViewController.swift */,
+				D0116AE5245716850056C881 /* MyImagePickerController.swift */,
 				D0A9C2FC24509F8A003C8F2E /* Functions.swift */,
 				D0A9C2F82450562F003C8F2E /* CategoryPickerViewController.swift */,
 				D0A9C2FA24506B6C003C8F2E /* HudView.swift */,
@@ -189,12 +195,14 @@
 				D0A9C2F92450562F003C8F2E /* CategoryPickerViewController.swift in Sources */,
 				D0DAF10D24511A1300899826 /* Location+CoreDataProperties.swift in Sources */,
 				D0FE3D94244FE6C200802A45 /* CurrentLocationViewController.swift in Sources */,
+				D0116AE6245716850056C881 /* MyImagePickerController.swift in Sources */,
 				D0A9C2FD24509F8A003C8F2E /* Functions.swift in Sources */,
 				D09BE96B24526A5E008A3C9B /* LocationCell.swift in Sources */,
 				D0FE3D90244FE6C200802A45 /* AppDelegate.swift in Sources */,
 				D0FE3D92244FE6C200802A45 /* SceneDelegate.swift in Sources */,
 				D0116AE02456BAD70056C881 /* UIImage+Resize.swift in Sources */,
 				D0DAF1092451177900899826 /* DataModel.xcdatamodeld in Sources */,
+				D0116AE42457136E0056C881 /* MyTabBarController.swift in Sources */,
 				D0A9C2FB24506B6C003C8F2E /* HudView.swift in Sources */,
 				D0DAF10C24511A1300899826 /* Location+CoreDataClass.swift in Sources */,
 				D06542B8245035B50065C822 /* LocationDetailsViewController.swift in Sources */,

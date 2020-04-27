@@ -250,18 +250,20 @@ extension LocationDetailsViewController: UIImagePickerControllerDelegate, UINavi
 
     // MARK:- Image Helper Methods
     func takePhotoWithCamera() {
-        let imagePicker = UIImagePickerController()
+        let imagePicker = MyImagePickerController()
         imagePicker.sourceType = .camera
         imagePicker.delegate = self
         imagePicker.allowsEditing = true
+        imagePicker.view.tintColor = view.tintColor
         present(imagePicker, animated: true, completion: nil)
     }
     
     func choosePhotoFromLibrary() {
-        let imagePicker = UIImagePickerController()
+        let imagePicker = MyImagePickerController()
         imagePicker.sourceType = .photoLibrary  // 写真フォルダから画像を選択
         imagePicker.delegate = self
         imagePicker.allowsEditing = true  // 編集を可能とする
+        imagePicker.view.tintColor = view.tintColor
         present(imagePicker, animated: true, completion: nil)
     }
     
