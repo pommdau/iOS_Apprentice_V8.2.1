@@ -132,6 +132,7 @@ class CurrentLocationViewController: UIViewController {
         containerView.center.y = 40 + containerView.bounds.size.height / 2
         
         // アニメーションでロゴボタンを隠す
+        // アニメーション完了後はDelegateメソッドの、func animationDidStop(_ anim: CAAnimation, finished flag: Bool)が呼ばれる
         let centerX = view.bounds.midX
         let panelMover = CABasicAnimation(keyPath: "position")
         panelMover.isRemovedOnCompletion = false
@@ -160,7 +161,6 @@ class CurrentLocationViewController: UIViewController {
         logoRotator.toValue               = -2 * Double.pi
         logoRotator.timingFunction        = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeIn)
         logoButton.layer.add(logoRotator, forKey: "logoRotator")
-        
     }
     
     func showLocationServicesDeniedAlert() {
@@ -251,10 +251,27 @@ class CurrentLocationViewController: UIViewController {
     }
     
     func configureGetButton() {
+        let spinnerTag = 1000  // PropertyでもいいがTagで管理すると、一箇所でまとめられる利点がある
+        
         if updatingLocation {
             getButton.setTitle("Stop", for: .normal)
+            
+            // スピナーがまだない場合は作成して表示
+            if view.viewWithTag(spinnerTag) == nil {
+                let spinner = UIActivityIndicatorView(style: .white)
+                spinner.center = messageLabel.center
+                spinner.center.y += spinner.bounds.size.height/2 + 25
+                spinner.startAnimating()
+                spinner.tag = spinnerTag
+                containerView.addSubview(spinner)
+            }
         } else {
             getButton.setTitle("Get My Locatoin", for: .normal)
+            
+            // スピナーがあればビューから削除
+            if let spinner = view.viewWithTag(spinnerTag) {
+                spinner.removeFromSuperview()
+            }
         }
     }
     
