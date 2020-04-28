@@ -66,6 +66,12 @@ extension CategoryPickerViewController {
         } else {
             cell.accessoryType = .none
         }
+        
+        // セルの選択時の色を設定
+        let selection = UIView(frame: CGRect.zero)
+        selection.backgroundColor = UIColor(white: 1.0, alpha: 0.3)
+        cell.selectedBackgroundView = selection
+        
         return cell
     }
     
