@@ -14,7 +14,9 @@ class CurrentLocationViewController: UIViewController {
     
     @IBOutlet weak var messageLabel: UILabel!
     @IBOutlet weak var latitudeLabel: UILabel!
+    @IBOutlet weak var latitudeTextLabel: UILabel!
     @IBOutlet weak var longitudeLabel: UILabel!
+    @IBOutlet weak var longitudeTextLabel: UILabel!
     @IBOutlet weak var addressLabel: UILabel!
     @IBOutlet weak var tagButton: UIButton!
     @IBOutlet weak var getButton: UIButton!
@@ -149,6 +151,9 @@ class CurrentLocationViewController: UIViewController {
                 addressLabel.text = "No Address Found"
             }
             
+            // 座標が取得できていれば結果を表示
+            latitudeTextLabel.isHidden = false
+            longitudeTextLabel.isHidden = false
         } else {
             latitudeLabel.text = ""
             longitudeLabel.text = ""
@@ -170,6 +175,9 @@ class CurrentLocationViewController: UIViewController {
                 statusMessage = "Tap 'Get My Location' to Start"
             }
             messageLabel.text = statusMessage
+            // 座標が取得できていない場合は結果を非表示
+            latitudeTextLabel.isHidden = true
+            longitudeTextLabel.isHidden = true
         }
         configureGetButton()
     }
