@@ -244,6 +244,14 @@ class LocationDetailsViewController: UITableViewController {
             pickPhoto()
         }
     }
+    
+    // セル選択時のカラーを設定
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        // IBではSelectionColorを設定できないのでコードで設定する
+        let selection = UIView(frame: CGRect.zero)
+        selection.backgroundColor = UIColor(white: 1.0, alpha: 0.3)
+        cell.selectedBackgroundView = selection
+    }
 }
 
 extension LocationDetailsViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
