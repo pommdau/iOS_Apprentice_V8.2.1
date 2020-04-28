@@ -12,6 +12,7 @@ import CoreData
 
 class CurrentLocationViewController: UIViewController {
     
+    @IBOutlet weak var containerView: UIView!  // 上部に表示するUIパーツを色々纏めたもの
     @IBOutlet weak var messageLabel: UILabel!
     @IBOutlet weak var latitudeLabel: UILabel!
     @IBOutlet weak var latitudeTextLabel: UILabel!
@@ -34,8 +35,18 @@ class CurrentLocationViewController: UIViewController {
     var lastGeocodingError: Error?
 
     var timer: Timer?  // 検索後60sでタイムアウトとする
-    
     var managedObjectContext: NSManagedObjectContext!  // LocaritonDetailsViewControllerに渡す用
+    var logoVisible = false  // ロゴを表示するかどうか
+    
+    lazy var logoButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setBackgroundImage(UIImage(named: "Logo"), for: .normal)
+        button.sizeToFit()
+        button.addTarget(self, action: #selector(getLocation), for: .touchUpInside)
+        button.center.x = self.view.bounds.midX
+        button.center.y = 220
+        return button
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -67,6 +78,11 @@ class CurrentLocationViewController: UIViewController {
             return
         }
         
+        // メインのロゴボタンを隠して"Searching..."を表示する
+        if logoVisible {
+            hideLogoView()
+        }
+        
         if updatingLocation {  // Stopの場合
             stopLocationManager()
         } else {
@@ -96,6 +112,20 @@ class CurrentLocationViewController: UIViewController {
     
     
     // MARK:- Helper Methods
+    func showLogoView() {
+        if !logoVisible {
+            logoVisible = true
+            containerView.isHidden = true
+            view.addSubview(logoButton)
+        }
+    }
+    
+    func hideLogoView() {
+        logoVisible = false
+        containerView.isHidden = false
+        logoButton.removeFromSuperview()
+    }
+    
     func showLocationServicesDeniedAlert() {
         let alert = UIAlertController(title: "Location Services Disabled",
                                       message: "Please enable location services for this app in Settings",
@@ -172,7 +202,8 @@ class CurrentLocationViewController: UIViewController {
             } else if updatingLocation {
                 statusMessage = "Searching..."
             } else {
-                statusMessage = "Tap 'Get My Location' to Start"
+                statusMessage = ""
+                showLogoView()
             }
             messageLabel.text = statusMessage
             // 座標が取得できていない場合は結果を非表示
