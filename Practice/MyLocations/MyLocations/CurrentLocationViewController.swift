@@ -9,6 +9,7 @@
 import UIKit
 import CoreLocation
 import CoreData
+import AudioToolbox
 
 class CurrentLocationViewController: UIViewController {
     
@@ -48,8 +49,11 @@ class CurrentLocationViewController: UIViewController {
         return button
     }()
     
+    var soundID: SystemSoundID = 0  // 0は音声の未ロードを表す
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        loadSoundEffect("Sound.caf")  // 音声の読み込み
         updateLabels()
     }
     
@@ -297,6 +301,26 @@ class CurrentLocationViewController: UIViewController {
             updateLabels()
         }
     }
+    
+    // MARK:- Sound effects
+    func loadSoundEffect(_ name: String) {
+        if let path = Bundle.main.path(forResource: name, ofType: nil) {
+            let fileURL = URL(fileURLWithPath: path, isDirectory: false)
+            let error = AudioServicesCreateSystemSoundID(fileURL as CFURL, &soundID)
+            if error != kAudioServicesNoError {
+                print("Error code \(error) loading sound: \(path)")
+            }
+        }
+    }
+    
+    func unloadSoundEffect() {
+        AudioServicesDisposeSystemSoundID(soundID)
+        soundID = 0
+    }
+    
+    func playSoundEffect() {
+        AudioServicesPlaySystemSound(soundID)
+    }
 }
 
 
@@ -367,6 +391,11 @@ extension CurrentLocationViewController: CLLocationManagerDelegate {
                     
                     // reverse geocodingに成功した場合
                     if error == nil, let p = placemarks, !p.isEmpty {
+                        if self.placemark == nil {  // 初めて成功した場合は音声を流す
+                            print("FIRST TIME")
+                            self.playSoundEffect()
+                        }
+                        
                         self.placemark = p.last!
                     } else {
                         // 失敗した場合、すでに（過去の）情報があればそれを破棄する

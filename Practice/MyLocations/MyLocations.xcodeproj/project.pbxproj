@@ -11,6 +11,7 @@
 		D0116AE22456C9F60056C881 /* String+AddText.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0116AE12456C9F60056C881 /* String+AddText.swift */; };
 		D0116AE42457136E0056C881 /* MyTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0116AE32457136E0056C881 /* MyTabBarController.swift */; };
 		D0116AE6245716850056C881 /* MyImagePickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0116AE5245716850056C881 /* MyImagePickerController.swift */; };
+		D0116AEC2457D4350056C881 /* Sound.caf in Resources */ = {isa = PBXBuildFile; fileRef = D0116AEB2457D4350056C881 /* Sound.caf */; };
 		D06542B8245035B50065C822 /* LocationDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D06542B7245035B50065C822 /* LocationDetailsViewController.swift */; };
 		D09BE96924518374008A3C9B /* LocationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D09BE96824518374008A3C9B /* LocationsViewController.swift */; };
 		D09BE96B24526A5E008A3C9B /* LocationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D09BE96A24526A5E008A3C9B /* LocationCell.swift */; };
@@ -35,6 +36,7 @@
 		D0116AE12456C9F60056C881 /* String+AddText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+AddText.swift"; sourceTree = "<group>"; };
 		D0116AE32457136E0056C881 /* MyTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyTabBarController.swift; sourceTree = "<group>"; };
 		D0116AE5245716850056C881 /* MyImagePickerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyImagePickerController.swift; sourceTree = "<group>"; };
+		D0116AEB2457D4350056C881 /* Sound.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Sound.caf; sourceTree = "<group>"; };
 		D06542B7245035B50065C822 /* LocationDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationDetailsViewController.swift; sourceTree = "<group>"; };
 		D09BE96824518374008A3C9B /* LocationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationsViewController.swift; sourceTree = "<group>"; };
 		D09BE96A24526A5E008A3C9B /* LocationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationCell.swift; sourceTree = "<group>"; };
@@ -68,6 +70,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D0116AEA2457D4350056C881 /* Sound */ = {
+			isa = PBXGroup;
+			children = (
+				D0116AEB2457D4350056C881 /* Sound.caf */,
+			);
+			path = Sound;
+			sourceTree = "<group>";
+		};
 		D09BE96C24559A96008A3C9B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -96,6 +106,7 @@
 		D0FE3D8E244FE6C200802A45 /* MyLocations */ = {
 			isa = PBXGroup;
 			children = (
+				D0116AEA2457D4350056C881 /* Sound */,
 				D0FE3D8F244FE6C200802A45 /* AppDelegate.swift */,
 				D0FE3D91244FE6C200802A45 /* SceneDelegate.swift */,
 				D0116AE32457136E0056C881 /* MyTabBarController.swift */,
@@ -181,6 +192,7 @@
 			files = (
 				D0FE3D9E244FE6C500802A45 /* LaunchScreen.storyboard in Resources */,
 				D0FE3D9B244FE6C500802A45 /* Assets.xcassets in Resources */,
+				D0116AEC2457D4350056C881 /* Sound.caf in Resources */,
 				D0FE3D99244FE6C200802A45 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
